@@ -1,0 +1,48 @@
+/* Update these specific rules */
+.year-marker {
+    height: 100px;
+    position: relative;
+}
+
+.year-dot {
+    position: absolute;
+    right: 16px;
+    width: 12px;
+    height: 12px;
+    background: var(--timeline-color);
+    border-radius: 50%;
+    border: 2px solid var(--timeline-dot-border);
+    top: 0; /* Align with start of year */
+}
+
+.project-line {
+    position: absolute;
+    width: 2px;
+    background: var(--timeline-color);
+}
+
+.project-dot {
+    position: absolute;
+    left: -5px;
+    width: 12px;
+    height: 12px;
+    background: var(--timeline-dot-border);
+    border: 2px solid var(--timeline-color);
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+.projects-container {
+    position: relative;
+    min-height: 100%;
+}
+
+.project-timeline {
+    position: absolute;
+    width: 100%;
+}
+
+.project-content {
+    position: absolute;
+    width: 250px;
+}

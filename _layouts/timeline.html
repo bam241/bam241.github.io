@@ -1,0 +1,383 @@
+---
+layout: page
+---
+
+<div class="timeline-container">
+  {% assign sorted_projects = site.projects | sort: 'start_date' %}
+  {% assign first_year = sorted_projects.first.start_date | date: '%Y' | minus: 0 %}
+  {% assign last_year = sorted_projects.last.start_date | date: '%Y' | minus: 0 %}
+  {% assign current_year = 'now' | date: '%Y' | minus: 0 %}
+  
+  {% if last_year < current_year %}
+    {% assign last_year = current_year %}
+  {% endif %}
+  
+  <div class="timeline">
+    <!-- Main Timeline -->
+    <div class="main-timeline">
+      {% for year in (first_year..last_year) %}
+        <div class="year-marker">
+          <span class="year-label">{{ year }}</span>
+          <div class="year-dot"></div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Project Timelines -->
+    <div class="projects-container">
+      {% for project in sorted_projects %}
+        <div class="project-timeline">
+          <div class="project-line">
+            <div class="project-dot start-dot"></div>
+            <div class="project-dot end-dot"></div>
+          </div>
+          <div class="project-content">
+            <h3>{{ project.title }}</h3>
+            <p class="project-dates">
+              {{ project.start_date | date:  "%Y/%m/%d" }} - 
+              {% if project.end_date %}
+                {{ project.end_date | date: "%Y/%m/%d" }}
+              {% else %}
+                Present
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+:root {
+  --timeline-color: #1a1a1a;
+  --timeline-secondary: #666666;
+  --timeline-dot-border: #ffffff;
+  --timeline-label-color: #1a1a1a;
+  --year-dot-color: #000000; /* Add this line */
+}
+
+
+.timeline-container {
+  padding: 20px;
+}
+
+.timeline {
+  display: flex;
+}
+
+/* Main Timeline */
+.main-timeline {
+  width: 100px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.main-timeline::before {
+  content: '';
+  position: absolute;
+  right: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--timeline-color);
+}
+
+.year-marker {
+  height: 100px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.year-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-weight: bold;
+    color: var(--timeline-label-color);
+    line-height: 12px;
+}
+
+.year-dot {
+    position: absolute;
+    right: 13px;
+    width: 18px;
+    height: 18px;
+    background: #000000;
+    border-radius: 50%;
+    border: 2px solid var(--timeline-dot-border);
+    top: 0px; /* Adjusted to move it up slightly */
+    transform: translateY(-10%); /* This will center it vertically */
+}
+
+/* Projects Container */
+/* Projet Content - Ajuster la taille en fonction du texte */
+/* Project Content - Darker font for the entire project box text */
+.project-content {
+    position: absolute;
+    width: 250px; /* Fixed width of 200px */
+    min-width: 200px;
+    max-width: 300px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    white-space: normal;
+    box-sizing: border-box;
+    color: #333333; /* Darker font for all the text in the project box */
+}
+
+.project-content h3 {
+    margin: 0 0 5px 0; /* Reduced bottom margin */
+    color: inherit; /* Use the inherited color from .project-content */
+}
+
+.project-dates {
+    color: inherit; /* Use the inherited color from .project-content */
+    font-size: 0.9em;
+    margin: 0; /* Remove margin for a cleaner look */
+}
+
+
+
+
+
+.projects-container {
+    flex-grow: 1;
+    padding-left: 20px;
+    position: relative;
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+}
+
+/* Project Timeline */
+.project-timeline {
+    position: absolute;
+    width: 100%;
+}
+
+.project-line {
+    position: absolute;
+    width: 2px;
+    background: var(--timeline-color);
+}
+
+.project-dot {
+  position: absolute;
+  left: -5px;
+  width: 12px;
+  height: 12px;
+  background: var(--timeline-dot-border);
+  border: 2px solid var(--timeline-color);
+  border-radius: 50%;
+}
+
+.start-dot {
+  top: 0;
+}
+
+.end-dot {
+  bottom: 0;
+}
+
+/* Styles pour surligner la timeline et la boîte du projet lors du survol */
+.project-timeline:hover .project-line {
+  background: var(--timeline-secondary); /* Ligne de projet plus foncée */
+}
+
+.project-timeline:hover .project-dot {
+  background: var(--timeline-dot-border); /* Points de projet plus foncés */
+  border-color: var(--timeline-color); /* Bordure noire */
+}
+
+.project-timeline:hover .start-dot,
+.project-timeline:hover .end-dot {
+  background: rgba(0, 0, 0, 0.8); /* Assombrir les points en les rendant plus foncés */
+  border-color: var(--timeline-color); /* Bordure noire */
+  transition: background 0.1s ease, border-color 0.1s ease; /* Transition fluide pour la couleur */
+}
+
+.project-timeline:hover .project-content {
+  background: #e0e0e0; /* Teinte plus foncée pour la boîte */
+  border-color: #d1d1d1; /* Bordure légèrement plus foncée */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Ajoute une légère ombre */
+}
+
+/* Ajout du pointer-events pour rendre les éléments survolables sans interférence */
+.project-timeline .project-dot,
+.project-timeline .start-dot,
+.project-timeline .end-dot {
+  pointer-events: all; /* Assure que ces éléments peuvent être survolés */
+}
+
+
+
+
+
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --timeline-color: #ffffff;
+    --timeline-secondary: #a0a0a0;
+    --timeline-dot-border: #2d333b;
+    --timeline-label-color: #ffffff;
+  }
+
+  .project-content {
+    background: #2d333b;
+    border-color: #444c56;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const projectTimelines = document.querySelectorAll('.project-timeline');
+    const yearMarkers = document.querySelectorAll('.year-marker');
+    const yearHeight = 100; // matches the CSS height of year-marker
+    const firstYear = parseInt(yearMarkers[0].querySelector('.year-label').textContent);
+
+    // Position year dots at the start of each year
+    yearMarkers.forEach(marker => {
+        marker.style.position = 'relative';
+        const dot = marker.querySelector('.year-dot');
+        dot.style.top = '0'; // Align dot at the top of the year marker
+    });
+
+    // Function to calculate vertical position based on date
+    function getVerticalPosition(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+        const yearOffset = (year - firstYear) * yearHeight;
+        const monthOffset = (month / 12) * yearHeight;
+        const dayOffset = (day / 30) * (yearHeight / 12);
+        return yearOffset + monthOffset + dayOffset;
+    }
+
+    // Function to check if newBox's top lies between otherBox's top and bottom
+    function isVerticallyOverlapping(newTop, otherTop, otherBottom) {
+        return newTop >= otherTop && newTop < otherBottom;
+    }
+
+    // Collect and process project data
+    const projects = Array.from(projectTimelines).map(timeline => {
+        const datesText = timeline.querySelector('.project-dates').textContent;
+        const [startStr, endStr] = datesText.split(' - ');
+        const startDate = new Date(startStr);
+        const endDate = endStr.trim() === 'Present' ? new Date() : new Date(endStr);
+        return {
+            element: timeline,
+            startDate,
+            endDate,
+            startPos: getVerticalPosition(startDate),
+            endPos: getVerticalPosition(endDate),
+            lane: 0 // Default lane (for timeline placement)
+        };
+    });
+
+    // Sort projects by start date
+    projects.sort((a, b) => a.startDate - b.startDate);
+
+    // Assign lanes to overlapping projects (for timeline placement)
+    projects.forEach((project, i) => {
+        for (let j = 0; j < i; j++) {
+            if (project.startPos < projects[j].endPos && projects[j].startPos < project.endPos) {
+                project.lane = Math.max(project.lane, projects[j].lane + 1);
+            }
+        }
+    });
+
+    // We'll store the horizontal positions of placed boxes for overlap checking.
+    let placedBoxes = []; // each item: { left, top, bottom }
+
+    // Position each project (timeline parts remain unchanged)
+    projects.forEach(project => {
+        const timeline = project.element;
+        const line = timeline.querySelector('.project-line');
+        const content = timeline.querySelector('.project-content');
+
+        // Timeline parts (unchanged)
+        const horizontalOffset = project.lane * 10; // for timeline line
+        line.style.position = 'absolute';
+        line.style.top = `${project.startPos}px`;
+        line.style.height = `${project.endPos - project.startPos}px`;
+        line.style.left = `${horizontalOffset}px`;
+
+        const startDot = line.querySelector('.start-dot');
+        const endDot = line.querySelector('.end-dot');
+        startDot.style.top = '0';
+        endDot.style.top = '100%';
+        startDot.style.left = '-5px';
+        endDot.style.left = '-5px';
+
+        // Position the project box (content)
+        if (content) {
+            content.style.position = 'absolute';
+            content.style.width = '250px'; // Fixed width
+
+            // Compute the vertical center of the timeline for this project.
+            const timelineCenter = project.startPos + (project.endPos - project.startPos) / 2;
+            // For vertical placement, we'll use the top edge of the box.
+            // We want to center the box vertically, so its intended top is:
+            const contentHeight = content.offsetHeight;
+            const intendedTop = timelineCenter - contentHeight / 2 +5;
+
+            // Compute the default horizontal position based on lane.
+            // (We assume base horizontal offset from the timelines remains unchanged.)
+            const baseContentOffset = (Math.max(...projects.map(p => p.lane)) + 1) * 10;
+            let newLeft = baseContentOffset
+
+            // Now, gather all previously placed boxes (with earlier start dates) that could overlap vertically.
+            let overlappingBoxes = [];
+            placedBoxes.forEach(box => {
+                if (isVerticallyOverlapping(intendedTop, box.top, box.bottom)) {
+                    overlappingBoxes.push(box);
+                }
+            });
+
+            // Now, loop from 0 up to (number of overlapping boxes + 1)
+            // For each candidate shift, compute candidate left = newLeft + candidateShift * (250 + 5)
+            // and check if that candidate causes horizontal overlap with any overlapping box.
+            const boxWidth = 250;
+            const shiftStep = boxWidth + 5;
+            let candidateLeft = newLeft;
+            for (let shift = 0; shift <= overlappingBoxes.length; shift++) {
+                candidateLeft = newLeft + shift * shiftStep;
+                let conflict = false;
+                overlappingBoxes.forEach(box => {
+                    // The candidate box occupies [candidateLeft, candidateLeft + 250].
+                    // Check for horizontal overlap: if candidateLeft is less than box.right
+                    // and candidateLeft + 250 is greater than box.left, then there is overlap.
+                    if (!(candidateLeft >= box.right || candidateLeft + boxWidth <= box.left)) {
+                        conflict = true;
+                    }
+                });
+                if (!conflict) {
+                    break;
+                }
+            }
+
+            // Place the box at the candidate left and intended top.
+            content.style.left = `${candidateLeft}px`;
+            content.style.top = `${intendedTop}px`;
+
+            // Add this box's placement info to placedBoxes
+            placedBoxes.push({
+                left: candidateLeft,
+                top: intendedTop,
+                bottom: intendedTop + contentHeight
+            });
+        }
+    });
+
+    // Adjust container width based on number of lanes (unchanged)
+    const maxLane = Math.max(...projects.map(p => p.lane));
+    const projectsContainer = document.querySelector('.projects-container');
+    projectsContainer.style.position = 'relative';
+});
+
+
+
+</script>
