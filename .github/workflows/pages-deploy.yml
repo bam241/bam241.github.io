@@ -14,8 +14,12 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
-          bundler-cache: true
+          ruby-version: '3.1' # Let's try a more stable version
+          
+      - name: Install Dependencies
+        run: |
+          gem install bundler
+          bundle install
           
       - name: Build site
         run: bundle exec jekyll build
