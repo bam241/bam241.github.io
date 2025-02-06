@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<div class="row">
+  <div class="col-12 col-lg-11 col-xl-8">
+    <div id="page" class="post pb-5 pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4 mb-md-4">
+    {% if page.dynamic_title %}
+      <h1 class="dynamic-title">
+        {{ page.title }}
+      </h1>
+      <div class="post-content">
+        {{ content }}
+      </div>
+    {% else %}
+      {{ content }}
+    {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Add this style to force hide the right panel -->
+<style>
+  #panel-wrapper {
+    display: none !important;
+  }
+  
+  #main-wrapper.col-12.col-lg-11.col-xl-8 {
+    max-width: none !important;
+  }
+</style>

@@ -1,3 +1,7 @@
+---
+---
 
-@import "{{ site.theme }}";
-@import "timeline";
+// Add custom styles
+#appearance-trigger {
+    display: none !important;
+}

@@ -1,0 +1,17 @@
+:root {
+    --timeline-color: #1a1a1a;
+    --timeline-secondary: #666666;
+    --timeline-dot-border: #ffffff;
+    --timeline-label-color: #1a1a1a;
+    --year-dot-color: #000000;
+}
+
+/* Dark mode variables */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --timeline-color: #ffffff;
+        --timeline-secondary: #a0a0a0;
+        --timeline-dot-border: #2d333b;
+        --timeline-label-color: #ffffff;
+    }
+}

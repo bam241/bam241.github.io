@@ -1,0 +1,249 @@
+.resume-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px;
+    font-family: Arial, sans-serif;
+    line-height: 1.4;
+}
+
+/* Header */
+.resume-header {
+    margin-bottom: 10px;
+}
+
+.name-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.name-left {
+    flex: 1;
+}
+
+.name-left h1 {
+    font-size: 48px;
+    margin: 0;
+    color: #444;
+    font-weight: normal;
+}
+
+.contact-right {
+    text-align: right;
+    padding-top: 15px;
+}
+
+.contact-right p {
+    margin: 0;
+    line-height: 1.4;
+    color: #444;
+}
+
+.title-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.title-left h2 {
+    font-size: 32px;
+    font-style: italic;
+    margin: 0;
+    color: #666;
+    font-weight: normal;
+}
+
+.company-section {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #999;
+    padding-bottom: 10px;
+}
+
+.company-left h3 {
+    font-size: 24px;
+    margin: 0;
+    color: #888;
+    font-weight: normal;
+}
+
+/* Skills Set */
+.skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.skills-column h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+.skill-item {
+    margin: 5px 0;
+}
+
+.skill-label {
+    font-style: italic;
+    margin-right: 5px;
+}
+
+/* Management and Languages */
+.management-languages {
+    margin: 15px 0;
+}
+
+.management-languages p {
+    margin: 5px 0;
+}
+
+/* Experience Section */
+.experience-item {
+    margin-bottom: 15px;
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+}
+
+.job-title {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.job-company {
+    font-style: italic;
+}
+
+.job-dates {
+    text-align: right;
+    min-width: 100px;
+}
+
+.job-details ul {
+    margin: 5px 0;
+    padding-left: 20px;
+}
+
+.job-details ul ul {
+    margin-top: 5px;
+}
+
+/* Print styles */
+@media print {
+    .resume-container {
+        padding: 0;
+    }
+
+    .download-section {
+        display: none;
+    }
+
+    @page {
+        margin: 2cm;
+    }
+}
+
+/* Experience Section Refinements */
+.job-title-company {
+    flex: 1;
+}
+
+.job-title {
+    font-weight: bold;
+}
+
+.job-company {
+    font-style: italic;
+}
+
+.job-location {
+    font-style: italic;
+}
+
+.job-subtitle {
+    font-style: italic;
+    margin: 5px 0;
+}
+
+.job-details ul {
+    margin: 5px 0;
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+.job-details ul li {
+    margin-bottom: 5px;
+    text-indent: -20px;
+    padding-left: 20px;
+}
+
+.job-details ul ul {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.job-details ul ul li {
+    margin-bottom: 3px;
+}
+
+/* Qualification Section */
+.qualification-list {
+    margin-top: 10px;
+}
+
+.qualification-item {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.qual-title {
+    flex: 2;
+}
+
+.qual-details {
+    flex: 1;
+    text-align: right;
+}
+
+.qual-org {
+    font-style: italic;
+    margin-right: 15px;
+}
+
+.qual-dates {
+    white-space: nowrap;
+}
+
+/* Scientific Communication Section */
+.scientific-stats {
+    margin-top: 10px;
+}
+
+.scientific-stats p {
+    margin: 5px 0;
+}
+
+/* Print-specific refinements */
+@media print {
+    section {
+        page-break-inside: avoid;
+    }
+
+    .experience-item, .qualification-item {
+        page-break-inside: avoid;
+    }
+
+    h2 {
+        page-break-after: avoid;
+    }
+
+    .job-details ul {
+        page-break-inside: avoid;
+    }
+}

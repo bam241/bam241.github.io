@@ -1,0 +1,157 @@
+---
+layout: page_no_right
+---
+
+{% assign resume = site.data.resume %}
+
+<div class="resume-container">
+    <!-- Header -->
+    <header class="resume-header">
+        <div class="name-section">
+            <div class="name-left">
+                <h1>Baptiste MOUGINOT</h1>
+            </div>
+            <div class="contact-right">
+                <p>bam.sci.consulting@gmail.com</p>
+                <p>+33 (0)6 52 05 52 33</p>
+                <p>GitHub: bam241</p>
+            </div>
+        </div>
+        <div class="title-section">
+            <div class="title-left">
+                <h2>Scientific Consultant</h2>
+            </div>
+        </div>
+        <div class="company-section">
+            <div class="company-left">
+                <h3>BaM Scientific Consulting</h3>
+            </div>
+        </div>
+    </header>
+
+    <div class="domain-expertise">
+        <h2>Nuclear Physics, Neutronics, Scientific Software Development</h2>
+    </div>
+
+    <!-- Skills Set -->
+    <section>
+        <h2>Skills Set</h2>
+        <div class="skills-grid">
+            <!-- Left Column -->
+            <div class="skills-column">
+                <h3>Simulations:</h3>
+                {% for skill in resume.skills.simulations %}
+                <div class="skill-item">
+                    <span class="skill-label">{{ skill[0] | replace: '_', ' ' | capitalize }}:</span>
+                    {{ skill[1] }}
+                </div>
+                {% endfor %}
+
+                <div class="management-languages">
+                    <h3>Management:</h3>
+                    {% for item in resume.skills.management %}
+                    <p>{{ item }}</p>
+                    {% endfor %}
+
+                    <h3>Languages:</h3>
+                    {% for lang in resume.skills.languages %}
+                    <p>{{ lang }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="skills-column">
+                <h3>Softwares:</h3>
+                {% for skill in resume.skills.softwares %}
+                <div class="skill-item">
+                    <span class="skill-label">{{ skill[0] | replace: '_', ' ' | capitalize }}:</span>
+                    {{ skill[1] }}
+                </div>
+                {% endfor %}
+
+                <h3>Scientific:</h3>
+                {% for item in resume.skills.scientific %}
+                <p>{{ item }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+<!-- Experience Section -->
+<section>
+    <h2>Experiences</h2>
+    {% for job in resume.experience %}
+    <div class="experience-item">
+        <div class="job-header">
+            <div class="job-title-company">
+                <span class="job-title">{{ job.title }}</span>
+                <span class="job-company">{{ job.company }}</span>
+                {% if job.location %}
+                <span class="job-location">, {{ job.location }}</span>
+                {% endif %}
+            </div>
+            <span class="job-dates">{{ job.dates }}</span>
+        </div>
+        {% if job.subtitle %}
+        <div class="job-subtitle">{{ job.subtitle }}</div>
+        {% endif %}
+        {% if job.details %}
+        <div class="job-details">
+            <ul>
+                {% for detail in job.details %}
+                <li>
+                    {% if detail.client %}<strong>{{ detail.client }}</strong>{% endif %}
+                    {% if detail.client and detail.description %}: {% endif %}
+                    {{ detail.description }}
+                    {% if detail.subdetails %}
+                    <ul>
+                        {% for subdetail in detail.subdetails %}
+                        <li>{{ subdetail }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</section>
+
+<!-- Qualification Section -->
+<section>
+    <h2>Qualification</h2>
+    <div class="qualification-list">
+        {% for qual in resume.qualifications %}
+        <div class="qualification-item">
+            <div class="qual-title">
+                {{ qual.title }}{% if qual.note %} <em>({{ qual.note }})</em>{% endif %}
+            </div>
+            <div class="qual-details">
+                <span class="qual-org">{{ qual.organization }}</span>
+                <span class="qual-dates">{{ qual.dates }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Scientific Communication Section -->
+<section>
+    <h2>Scientific Communication</h2>
+    <div class="scientific-stats">
+        <p>h-index = {{ resume.scientific_communication.h_index }} ({{ resume.scientific_communication.h_index_source }})</p>
+        <p>{{ resume.scientific_communication.publications }} publications, 
+           {{ resume.scientific_communication.conferences }} Conférences/workshop 
+           ({{ resume.scientific_communication.proceedings }} proceedings)</p>
+    </div>
+</section>
+
+<!-- Download Button -->
+<div class="download-section">
+    <button onclick="window.print()" class="download-btn">Download PDF</button>
+</div>
+
+</div>

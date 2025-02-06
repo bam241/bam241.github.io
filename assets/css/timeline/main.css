@@ -1,0 +1,115 @@
+.timeline-container {
+    padding: 20px;
+    padding-bottom: 250px;
+}
+
+.timeline {
+    display: flex;
+}
+
+/* Year Timeline */
+.main-timeline {
+    width: 100px;
+    flex-shrink: 0;
+    position: relative;
+}
+
+/* Main Timeline line */
+.main-timeline::before {
+    content: '';
+    position: absolute;
+    right: 20px;
+    top: 0;
+    height: var(--dotted-line-start, 100%);
+    width: 2px;
+    background: var(--timeline-color);
+}
+
+/* Dotted line for future */
+.main-timeline::after {
+    content: '';
+    position: absolute;
+    right: 20px;
+    width: 2px;
+    top: var(--dotted-line-start);
+    bottom: 0;
+    background-image: linear-gradient(
+        to bottom,
+        var(--timeline-color) 50%,
+        transparent 50%
+    );
+    background-size: 2px 8px;
+    background-repeat: repeat-y;
+    opacity: 0.5;
+}
+
+.year-marker {
+    height: 250px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.year-label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-weight: bold;
+    color: var(--timeline-label-color);
+    line-height: 12px;
+}
+
+.year-dot {
+    position: absolute;
+    right: 12px;
+    width: 18px;
+    height: 18px;
+    background: var(--year-dot-color);
+    border-radius: 50%;
+    border: 2px solid var(--timeline-dot-border);
+    top: 0;
+    transform: translateY(-10%);
+}
+
+/* Month markers */
+/* Month markers */
+.month-markers {
+    position: absolute;
+    right: 12px;
+    top: 30px;
+    height: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 18px;
+}
+
+.month-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--timeline-color);
+    border-radius: 50%;
+    opacity: 1;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.present-marker {
+    position: absolute;
+    left: -85px; /* Align with year label */
+    top: 0; /* Align with the last month */
+    color: var(--timeline-label-color);
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 2px 0;
+}
+
+/* Remove the extra month dot */
+.month-markers:last-child {
+    padding-bottom: 0; /* Remove extra space at bottom */
+}
+
+.month-markers:last-child .month-dot:last-child {
+    display: none; /* Hide the last extra dot */
+}

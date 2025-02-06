@@ -1,0 +1,82 @@
+header:
+  name: Baptiste MOUGINOT
+  title: Scientific Consultant
+  company: BaM Scientific Consulting
+  contact:
+    email: bam.sci.consulting@gmail.com
+    phone: +33 (0)6 52 05 52 33
+    github: bam241
+
+domain: Nuclear Physics, Neutronics, Scientific Software Development
+
+skills:
+  simulations:
+    fuel_cycle: Cyclus, CLASS
+    burnup: MURE, OpenMC
+    neutronic: OpenMC, MCNP, DAGMC, Geant4, FRENSIE
+    other: LISE++, SRIM, PyNE
+  
+  softwares:
+    version_control: Git, Github, SVN, GitLab
+    continuous_integration: Circle-Ci, Github, Travis
+    virtualisation: Docker, VMWare
+    ide: VSCODE, GDB, PDB, Valgrind
+    cluster: QSUB, HTCondor
+    development: C/C++, Python, sh/bash script, Python
+
+  management:
+    - Training, Tutoring, Workshops
+
+  languages:
+    - English (bilingual)
+
+experience:
+  - title: Scientific Consultant
+    company: Freelance
+    dates: 2022 - Present
+    subtitle: Scientific software development, CI/CD, simulation and data analysis
+    details:
+      - client: UW-Madison
+        description: LLNL-funded project to explore introduction of targeted isotopes into the commercial nuclear fuel supply to support nuclear non-proliferation (~1 month, 2023)
+      
+      - client: NAAREA
+        description: (7 contracts, 2022-2024)
+        subdetails:
+          - Catia Geometry to OpenMC interface development - Python (1 month, 2022)
+          - Continuous extraction during depletion with openMC - Python (1 month, 2023)
+          - Training, support and implementation of software and scientific analysis best practices (5d/m, 2023) (5d/m, 2024)
+          - Analysis of the radionuclide accumulation and flow through gaz collection on a reactor cycle (1 month, 2023) (10d, 2024)
+          - Allowing materials differentiation when loading multiple time the same DAGMC Geometry in OpenMC (1 month, 2024)
+      
+      - client: First Light Fusion
+        description: Targeted development in OpenMC (5x2h, 2023-2024)
+      
+      - client: PROXIMA
+        description: Bug correction and streamline dependencies compilation for DAGMC (4d, 2024)
+
+  # Add other experiences...
+
+qualifications:
+  - title: R&D expert certification
+    organization: French Ministry of higher Education and Research
+    dates: 2023 - 2025
+
+  - title: Certified "Software Carpentry Instructor"
+    organization: https://carpentries.org
+    dates: 2019
+
+  - title: PhD, Nuclear Physics
+    note: Summa cum laude
+    organization: Université Paris XI, France
+    dates: 2007 - 2010
+
+  - title: Magistere degree (BS - MS) in Fundamental Physics
+    organization: Université Paris XI, France
+    dates: 2004 - 2007
+
+scientific_communication:
+  h_index: 12
+  h_index_source: Web of ScienceTM / Google Scholar
+  publications: 21
+  conferences: 32
+  proceedings: 21

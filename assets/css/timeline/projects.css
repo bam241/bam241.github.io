@@ -1,0 +1,179 @@
+/* Container */
+.projects-container {
+    flex-grow: 1;
+    padding-left: 20px;
+    position: relative;
+    overflow-x: auto;
+}
+
+/* Timeline Elements */
+.project-timeline {
+    position: absolute;
+    width: 100%;
+}
+
+/* Timeline Elements */
+.project-line {
+    position: absolute;
+    width: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.project-dot {
+    position: absolute;
+    left: -5px;
+    width: 12px;
+    height: 12px;
+    background: var(--timeline-dot-border);
+    border: 2px solid var(--timeline-color);
+    border-radius: 50%;
+    pointer-events: all;
+    transition: all 0.2s ease;
+}
+
+.start-dot { top: 0; }
+.end-dot { bottom: 0; }
+
+/* Project Content Box */
+.project-content {
+    position: absolute;
+    width: 220px;
+    background: #f8f9fa;  /* Light mode background */
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    white-space: normal;
+    box-sizing: border-box;
+    color: #333333;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-content h3 {
+    margin: 0 0 5px 0;
+    color: inherit;
+}
+
+.project-client,
+.project-dates {
+    font-size: 0.9em;
+    margin: 0 0 5px 0;
+    color: inherit;
+}
+
+.project-dates {
+    margin-bottom: 0;
+}
+
+/* Hover Effects */
+.project-timeline:hover .project-line {
+    box-shadow: -1px 0 1px var(--timeline-color), 
+                1px 0 1px var(--timeline-color),
+                0 0 3px currentColor; /* Adds a slight glow with the line's color */
+}
+
+.project-timeline:hover .project-dot {
+    filter: drop-shadow(0 0 2px currentColor);
+    transform: scale(1.2);
+}
+
+.project-timeline:hover .project-content {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Add pointer-events for better hover handling */
+.project-timeline .project-dot,
+.project-timeline .start-dot,
+.project-timeline .end-dot {
+    pointer-events: all;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    .project-content {
+        background: #1a1f24 !important;  /* Dark mode background */
+        color: #ffffff !important;
+    }
+
+    .project-content h3,
+    .project-content .project-client,
+    .project-content .project-dates,
+    .project-content .project-client strong {
+        color: #ffffff !important;
+    }
+}
+
+
+/* In projects.css */
+.project-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+}
+
+.modal-content {
+    position: relative;
+    background-color: var(--sidebar-bg);
+    margin: 15% auto;
+    padding: 20px;
+    width: 70%;
+    max-width: 700px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-clickable {
+    cursor: pointer;
+}
+
+.modal-close {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-color);
+    z-index: 1; /* Ensure it's above the clickable area */
+}
+
+.modal-header {
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    margin: 0 0 10px 0;
+    color: var(--text-color);
+}
+
+.modal-body {
+    color: var(--text-color);
+}
+
+#modalSkills {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#modalSkills span {
+    padding: 3px 10px;
+    border-radius: 15px;
+    background: var(--text-muted);
+    color: var(--sidebar-bg);
+    font-size: 0.9em;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .modal-content {
+        background-color: #1a1f24;
+    }
+}
