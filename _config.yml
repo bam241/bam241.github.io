@@ -232,6 +232,13 @@ exclude:
   - purgecss.js
   - rollup.config.js
   - "package*.json"
+  - vendor
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - README.md
+  - LICENSE
+  - CNAME
 
 jekyll-archives:
   enabled: [categories, tags]
