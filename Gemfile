@@ -1,18 +1,19 @@
 source "https://rubygems.org"
 
-gem "github-pages", "~> 228"
-gem "webrick", "~> 1.8"
-gem "faraday-retry"
+ruby '3.1.4'
+
+gem 'jekyll', '~> 4.3.2'
+gem 'jekyll-theme-chirpy', '~> 6.2.3'
 
 group :jekyll_plugins do
-  gem "jekyll-remote-theme"
-  gem "jekyll-paginate"
-  gem "jekyll-sitemap"
-  gem "jekyll-gist"
-  gem "jekyll-feed"
-  gem "jemoji"
-  gem "jekyll-include-cache"
-  gem "jekyll-seo-tag"
-  gem "jekyll-redirect-from"
-  gem "jekyll-archives"
+  gem 'jekyll-remote-theme'
+  gem 'jekyll-paginate'
+  gem 'jekyll-sitemap'
+  gem 'jekyll-feed'
+  gem 'jekyll-seo-tag'
+  gem 'jekyll-archives'
+  gem 'jekyll-include-cache'
+  gem 'jekyll-gist'
+  gem 'webrick'
+  gem 'faraday-retry'
 end
