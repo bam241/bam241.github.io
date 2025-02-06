@@ -38,7 +38,7 @@
 }
 
 /* In zoom.css */
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
     .zoom-controls {
         background: var(--sidebar-bg);
     }
@@ -53,4 +53,4 @@
         background: var(--text-color);
         color: var(--sidebar-bg);
     }
-} */
+}
