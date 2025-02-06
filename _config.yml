@@ -240,4 +240,5 @@ plugins:
   - jekyll-include-cache
   - jekyll-seo-tag
   - jekyll-remote-theme
-  - jekyll-redirect-from 
+  - jekyll-redirect-from
+  - jekyll-archives 
