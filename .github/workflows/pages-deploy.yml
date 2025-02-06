@@ -9,7 +9,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -19,19 +20,16 @@ jobs:
           ruby-version: '3.1'
           bundler-cache: true
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+      - name: Delete Gemfile.lock
+        run: rm -f Gemfile.lock
 
       - name: Install Dependencies
         run: |
           bundle install
-          npm install
-
-      - name: Build Site
+          
+      - name: Build site
         run: bundle exec jekyll build
-
+        
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
