@@ -19,11 +19,11 @@ jobs:
         with:
           ruby-version: '3.1'
 
-      - name: Clean environment
+      - name: Setup Environment
         run: |
           rm -f Gemfile.lock
-          gem cleanup
-          bundle clean --force
+          gem install bundler
+          bundle config path vendor/bundle
           
       - name: Install Dependencies
         run: |
