@@ -1,8 +1,20 @@
 # The Site Configuration
 
 # Import the theme
-remote_theme: cotes2020/jekyll-theme-chirpy
+remote_theme: cotes2020/jekyll-theme-chirpy@v6.5.1
 
+
+plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jemoji
+  - jekyll-include-cache
+  - jekyll-seo-tag
+  - jekyll-remote-theme
+  - jekyll-redirect-from
+  - jekyll-archives 
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
 # If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
 # otherwise, the layout language will use the default value of 'en'.
@@ -230,15 +242,3 @@ jekyll-archives:
     tag: /tags/:name/
     category: /categories/:name/
 
-
-plugins:
-  - jekyll-paginate
-  - jekyll-sitemap
-  - jekyll-gist
-  - jekyll-feed
-  - jemoji
-  - jekyll-include-cache
-  - jekyll-seo-tag
-  - jekyll-remote-theme
-  - jekyll-redirect-from
-  - jekyll-archives 

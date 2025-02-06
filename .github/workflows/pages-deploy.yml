@@ -3,27 +3,35 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # or master, depending on your default branch name
+      - main
 
 jobs:
-  github-pages:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+        with:
+          fetch-depth: 0
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1' # Let's try a more stable version
-          
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
       - name: Install Dependencies
         run: |
-          gem install bundler
           bundle install
-          
-      - name: Build site
+          npm install
+
+      - name: Build Site
         run: bundle exec jekyll build
-        
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

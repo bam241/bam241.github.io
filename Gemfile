@@ -1,9 +1,7 @@
 source "https://rubygems.org"
 
-gem "jekyll", "~> 4.3.2"
+gem "github-pages", group: :jekyll_plugins
 gem "jekyll-remote-theme"
-gem "jekyll-redirect-from"
-gem "jekyll-archives"  # Add this line
 
 group :jekyll_plugins do
   gem "jekyll-paginate"
@@ -14,7 +12,7 @@ group :jekyll_plugins do
   gem "jekyll-include-cache"
   gem "jekyll-seo-tag"
   gem "jekyll-redirect-from"
-  gem "jekyll-archives"  # Add this line here too
+  gem "jekyll-archives"
 end
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
