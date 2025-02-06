@@ -152,7 +152,7 @@
     }
 }
 /* In filters.css */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
     .bottom-filter-menu {
         background: var(--sidebar-bg);
     }
@@ -178,4 +178,4 @@
         background: var(--sidebar-bg);
         color: var(--text-color);
     }
-}
+} */

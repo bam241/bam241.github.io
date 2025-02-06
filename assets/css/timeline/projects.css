@@ -91,9 +91,9 @@
 }
 
 /* Dark Mode */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
     .project-content {
-        background: #1a1f24 !important;  /* Dark mode background */
+        background: #1a1f24 !important; 
         color: #ffffff !important;
     }
 
@@ -103,7 +103,7 @@
     .project-content .project-client strong {
         color: #ffffff !important;
     }
-}
+} */
 
 
 /* In projects.css */
