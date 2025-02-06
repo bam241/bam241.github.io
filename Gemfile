@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "github-pages", "~> 228"
 gem "webrick", "~> 1.8"
+gem "faraday-retry"
 
 group :jekyll_plugins do
   gem "jekyll-remote-theme"
