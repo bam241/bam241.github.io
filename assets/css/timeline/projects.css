@@ -1,112 +1,115 @@
-/* Container */
-.projects-container {
-    flex-grow: 1;
-    padding-left: 20px;
+.timeline-container {
     position: relative;
-    overflow-x: auto;
+    padding: 20px;
+    overflow: visible;
 }
 
-/* Timeline Elements */
+.timeline {
+    display: flex;
+    position: relative;
+}
+
+.main-timeline {
+    position: relative;
+    width: 100px;
+    flex-shrink: 0;
+}
+
+.projects-container {
+    position: relative;
+    flex-grow: 1;
+    margin-left: 20px;
+}
+
 .project-timeline {
     position: absolute;
     width: 100%;
+    pointer-events: none;
 }
 
-/* Timeline Elements */
 .project-line {
     position: absolute;
     width: 2px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    background-color: var(--timeline-color);
+    pointer-events: all;
 }
 
+.project-content {
+    position: absolute;
+    pointer-events: all;
+    z-index: 1;
+}
+
+/* Project Dots */
 .project-dot {
     position: absolute;
-    left: -5px;
     width: 12px;
     height: 12px;
     background: var(--timeline-dot-border);
     border: 2px solid var(--timeline-color);
     border-radius: 50%;
+    left: -5px;
     pointer-events: all;
     transition: all 0.2s ease;
 }
 
-.start-dot { top: 0; }
-.end-dot { bottom: 0; }
+.start-dot { 
+    top: -6px; 
+}
+
+.end-dot { 
+    bottom: -6px; 
+}
 
 /* Project Content Box */
 .project-content {
     position: absolute;
     width: 220px;
-    background: #f8f9fa;  /* Light mode background */
+    background: var(--sidebar-bg);
     padding: 15px;
     border-radius: 8px;
-    border: 1px solid #e9ecef;
-    white-space: normal;
-    box-sizing: border-box;
-    color: #333333;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    pointer-events: all;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1;
 }
 
 .project-content h3 {
-    margin: 0 0 5px 0;
-    color: inherit;
+    margin: 0 0 8px 0;
+    color: var(--heading-color);
+    font-size: 1.1em;
 }
 
-.project-client,
-.project-dates {
+.project-client {
+    margin: 0 0 5px 0;
     font-size: 0.9em;
-    margin: 0 0 5px 0;
-    color: inherit;
+    color: var(--text-color);
 }
 
 .project-dates {
-    margin-bottom: 0;
+    margin: 0;
+    font-size: 0.85em;
+    color: var(--text-muted);
 }
 
 /* Hover Effects */
-.project-timeline:hover .project-line {
-    box-shadow: -1px 0 1px var(--timeline-color), 
-                1px 0 1px var(--timeline-color),
-                0 0 3px currentColor; /* Adds a slight glow with the line's color */
+.project-line:hover {
+    box-shadow: 0 0 3px var(--timeline-color);
 }
 
-.project-timeline:hover .project-dot {
-    filter: drop-shadow(0 0 2px currentColor);
+.project-dot:hover {
     transform: scale(1.2);
+    box-shadow: 0 0 3px var(--timeline-color);
 }
 
-.project-timeline:hover .project-content {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.project-content:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* Add pointer-events for better hover handling */
-.project-timeline .project-dot,
-.project-timeline .start-dot,
-.project-timeline .end-dot {
-    pointer-events: all;
-}
-
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-    .project-content {
-        background: #1a1f24 !important;  /* Dark mode background */
-        color: #ffffff !important;
-    }
-
-    .project-content h3,
-    .project-content .project-client,
-    .project-content .project-dates,
-    .project-content .project-client strong {
-        color: #ffffff !important;
-    }
-}
-
-
-/* In projects.css */
+/* Modal Styles */
 .project-modal {
     display: none;
     position: fixed;
@@ -115,8 +118,9 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 2000;
+    z-index: 1000;
 }
+
 
 .modal-content {
     position: relative;
@@ -175,5 +179,71 @@
 @media (prefers-color-scheme: dark) {
     .modal-content {
         background-color: #1a1f24;
+    }
+}
+
+/* Timeline hover effects */
+.project-timeline:hover .project-line {
+    box-shadow: -1px 0 1px var(--timeline-color), 
+                1px 0 1px var(--timeline-color),
+                0 0 3px currentColor;
+    width: 3px;
+}
+
+.project-timeline:hover .project-dot {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 2px var(--timeline-color));
+}
+
+.project-timeline:hover .project-content {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Individual element hover effects */
+.project-line {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.project-dot {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.project-content {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-line:hover {
+    box-shadow: -1px 0 1px var(--timeline-color), 
+                1px 0 1px var(--timeline-color),
+                0 0 3px currentColor;
+    width: 3px;
+}
+
+.project-dot:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 2px var(--timeline-color));
+}
+
+.project-content:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode hover adjustments */
+@media (prefers-color-scheme: dark) {
+    .project-timeline:hover .project-line,
+    .project-line:hover {
+        box-shadow: -1px 0 1px var(--timeline-color), 
+                    1px 0 1px var(--timeline-color),
+                    0 0 3px var(--timeline-color);
+    }
+
+    .project-timeline:hover .project-content,
+    .project-content:hover {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
     }
 }
