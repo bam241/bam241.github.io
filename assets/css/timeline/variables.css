@@ -7,11 +7,11 @@
 }
 
 /* Dark mode variables */
-/* @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
     :root {
         --timeline-color: #ffffff;
         --timeline-secondary: #a0a0a0;
         --timeline-dot-border: #2d333b;
         --timeline-label-color: #ffffff;
     }
-} */
+}
