@@ -1,8 +1,18 @@
 ---
-# the default layout is 'page'
+layout: page
+title: About
+permalink: /about/
+order: 4
 icon: fas fa-info-circle
-order: 3
 ---
 
-> Add Markdown syntax content to file `_tabs/about.md`{: .filepath } and it will show up on this page.
-{: .prompt-tip }
+<div class="about-section">
+    <p>
+        {{ site.data.author.description | markdownify }}
+    </p>
+    <div class="resume-link">
+        <a href="/resume/" class="cta-button">
+            <i class="fas fa-file-pdf"></i> Resume
+        </a>
+    </div>
+</div>

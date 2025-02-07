@@ -111,6 +111,7 @@ class FilterManager {
         this.activeClients = new Set();
         this.activeSkills = new Set();
         this.setupFilters();
+        this.checkUrlParameters();
     }
 
     setupFilters() {
@@ -121,6 +122,24 @@ class FilterManager {
         this.setupClientButtons();
         this.setupSkillButtons();
         this.setupResetButton();
+    }
+
+    checkUrlParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const skillParam = urlParams.get('skill');
+        
+        if (skillParam) {
+            // Find the corresponding skill button
+            const skillButton = Array.from(this.skillBtns)
+                .find(btn => btn.dataset.skill.toLowerCase() === skillParam.toLowerCase());
+            
+            if (skillButton) {
+                // Clear any existing filters and apply the skill filter
+                this.clearSkillFilters(document.querySelector('.skill-btn[data-skill=""]'));
+                this.toggleSkillFilter(skillButton, skillButton.dataset.skill);
+                this.applyFilters();
+            }
+        }
     }
 
     setupClientButtons() {
@@ -165,6 +184,7 @@ class FilterManager {
         this.activeSkills.clear();
         this.skillBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        this.updateUrl(null);
     }
 
     toggleClientFilter(btn, clientName) {
@@ -185,9 +205,23 @@ class FilterManager {
         if (btn.classList.contains('active')) {
             btn.classList.remove('active');
             this.activeSkills.delete(skillName);
+            this.updateUrl(null);
         } else {
             btn.classList.add('active');
             this.activeSkills.add(skillName);
+            this.updateUrl(skillName);
+        }
+    }
+
+    updateUrl(skill) {
+        if (skill) {
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('skill', skill);
+            window.history.pushState({}, '', newUrl);
+        } else {
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.delete('skill');
+            window.history.pushState({}, '', newUrl);
         }
     }
 
@@ -205,6 +239,7 @@ class FilterManager {
             timeline.style.display = '';
         });
 
+        this.updateUrl(null);
         this.manager.processProjects();
     }
 
