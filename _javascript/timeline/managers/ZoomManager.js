@@ -1,4 +1,4 @@
-export class TimelineZoom {
+class TimelineZoom {
     constructor(timelineManager) {
         this.manager = timelineManager;
         this.currentZoom = 1;

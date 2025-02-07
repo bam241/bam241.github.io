@@ -1,3 +1,110 @@
+// Source: _javascript/timeline/managers/ColorManager.js
+class ColorManager {
+    constructor() {
+        this.colors = [
+            '#E63946', '#2A9D8F', '#264653', '#1ABC9C',
+            '#F4A261', '#4A90E2', '#8E44AD', '#27AE60',
+            '#E67E22', '#C0392B', '#1ABC9C', '#F39C12',
+            '#7D3C98', '#2ECC71', '#E74C3C', '#3498DB'
+        ];
+    }
+
+    hexToRGB(hex) {
+        hex = hex.replace('#', '');
+        if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        }
+        return {
+            r: parseInt(hex.substring(0, 2), 16),
+            g: parseInt(hex.substring(2, 4), 16),
+            b: parseInt(hex.substring(4, 6), 16)
+        };
+    }
+
+    generateClientColors(projectTimelines) {
+        const clientColors = {};
+        const clients = new Set();
+        
+        projectTimelines.forEach(timeline => {
+            const clientText = timeline.querySelector('.project-client')?.textContent || '';
+            if (clientText) {
+                const clientName = clientText.replace('Client:', '').trim();
+                clients.add(clientName);
+            }
+        });
+
+        Array.from(clients).sort().forEach((client, index) => {
+            clientColors[client] = this.colors[index % this.colors.length];
+        });
+
+        return clientColors;
+    }
+
+    applyClientColors(projectTimelines, clientColors) {
+        this.applyTimelineColors(projectTimelines, clientColors);
+        this.applyButtonColors(clientColors);
+    }
+
+    applyTimelineColors(projectTimelines, clientColors) {
+        projectTimelines.forEach(timeline => {
+            const clientText = timeline.querySelector('.project-client')?.textContent || '';
+            const clientName = clientText.replace('Client:', '').trim();
+            const color = clientColors[clientName];
+            
+            if (color) {
+                this.applyColorToElements(timeline, color);
+            }
+        });
+    }
+
+    applyColorToElements(timeline, color) {
+        const content = timeline.querySelector('.project-content');
+        if (content) {
+            content.style.borderLeft = `4px solid ${color}`;
+            content.dataset.clientColor = color;
+        }
+
+        const line = timeline.querySelector('.project-line');
+        if (line) {
+            line.style.backgroundColor = color;
+            line.style.setProperty('--timeline-color', color);
+        }
+
+        const dots = timeline.querySelectorAll('.project-dot');
+        dots.forEach(dot => {
+            dot.style.borderColor = color;
+        });
+    }
+
+    applyButtonColors(clientColors) {
+        document.querySelectorAll('.client-btn').forEach(btn => {
+            const clientName = btn.dataset.client;
+            const color = clientColors[clientName];
+            if (color && clientName) {
+                this.setupClientButton(btn, color);
+            }
+        });
+    }
+
+    setupClientButton(btn, color) {
+        btn.style.borderColor = color;
+        btn.style.borderWidth = '2px';
+        
+        btn.addEventListener('mouseenter', () => {
+            btn.style.backgroundColor = color;
+            btn.style.color = '#fff';
+        });
+        
+        btn.addEventListener('mouseleave', () => {
+            if (!btn.classList.contains('active')) {
+                btn.style.backgroundColor = 'var(--sidebar-bg)';
+                btn.style.color = 'var(--text-color)';
+            }
+        });
+    }
+}
+
+// Source: _javascript/timeline/managers/FilterManager.js
 class FilterManager {
     constructor(timelineManager) {
         this.manager = timelineManager;
@@ -146,43 +253,36 @@ class FilterManager {
     }
 }
 
+// Source: _javascript/timeline/managers/ProjectPositioner.js
 class ProjectPositioner {
     constructor(timelineManager) {
         this.manager = timelineManager;
         this.placedBoxes = [];
-        this.BOX_WIDTH = 210;
-        this.LANE_OFFSET = 15;
-        this.CONTENT_PADDING = 5;
+        this.BOX_WIDTH = 220;
+        this.LANE_SPACING = 15;
+        this.BASE_OFFSET = 20;
+        this.MONTH_HEIGHT = 40;
+        this.BOX_SPACING = 5;
+        this.CONTENT_OFFSET = 10; // Space between timeline end and content
+        
+        const firstMarker = document.querySelector('.year-marker, .month-marker');
+        this.timelineOffset = firstMarker ? firstMarker.getBoundingClientRect().top : 0;
     }
 
     processProjects() {
-        this.placedBoxes = [];
         const visibleProjects = this.getVisibleProjects();
         this.assignLanes(visibleProjects);
-        
-        requestAnimationFrame(() => {
-            this.positionProjects(visibleProjects);
-        });
+        this.positionAllProjects(visibleProjects);
     }
 
     getVisibleProjects() {
         return Array.from(this.manager.projectTimelines)
             .filter(timeline => timeline.style.display !== 'none')
-            .map(timeline => {
-                const dates = this.getProjectDates(timeline);
-                const content = timeline.querySelector('.project-content');
-                
-                if (content) {
-                    content.style.position = 'absolute';
-                    content.style.width = `${this.BOX_WIDTH}px`;
-                }
-                
-                return {
-                    element: timeline,
-                    ...dates,
-                    lane: 0
-                };
-            })
+            .map(timeline => ({
+                element: timeline,
+                ...this.getProjectDates(timeline),
+                lane: 0
+            }))
             .sort((a, b) => a.startDate - b.startDate);
     }
 
@@ -195,22 +295,34 @@ class ProjectPositioner {
         return {
             startDate,
             endDate,
-            startPos: this.getVerticalPosition(startDate),
-            endPos: this.getVerticalPosition(endDate)
+            startPos: this.calculatePosition(startDate),
+            endPos: this.calculatePosition(endDate)
         };
     }
 
-    getVerticalPosition(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
-        const baseYearHeight = this.manager.yearHeight * this.manager.zoomManager.getCurrentZoom();
-        const yearOffset = (year - this.manager.firstYear) * baseYearHeight;
-        const monthOffset = (month / 12) * baseYearHeight;
-        const dayOffset = (day / 30) * (baseYearHeight / 12);
-        return yearOffset + monthOffset + dayOffset;
+    calculatePosition(date) {
+        const zoomLevel = this.manager.zoomManager.getCurrentZoom();
+        
+        // Get the first marker to determine our starting point
+        const firstMarker = document.querySelector('.year-marker, .month-marker');
+        const startYear = parseInt(firstMarker.dataset.year);
+        const startMonth = parseInt(firstMarker.dataset.month) - 1; // Convert to 0-based month
+        
+        // Calculate months since start
+        const yearDiff = date.getFullYear() - startYear;
+        const monthDiff = date.getMonth() - startMonth;
+        const totalMonths = (yearDiff * 12) + monthDiff - 1;
+        
+        // Calculate day position within month
+        const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        const dayProgress = (date.getDate() - 1) / daysInMonth;
+        
+        // Calculate final position
+        const monthPosition = totalMonths * this.MONTH_HEIGHT;
+        const dayOffset = dayProgress * this.MONTH_HEIGHT;
+        
+        return Math.max(0, (monthPosition + dayOffset) * zoomLevel);
     }
-
     assignLanes(projects) {
         projects.forEach((project, i) => {
             for (let j = 0; j < i; j++) {
@@ -222,235 +334,119 @@ class ProjectPositioner {
     }
 
     hasOverlap(project1, project2) {
-        return project1.startPos < project2.endPos && 
-               project2.startPos < project1.endPos;
+        const buffer = 50;
+        return project1.startPos < (project2.endPos + buffer) && 
+               project2.startPos < (project1.endPos + buffer);
     }
 
-    positionProjects(projects) {
+    positionAllProjects(projects) {
         this.placedBoxes = [];
-        
-        projects.forEach(project => {
-            this.positionProject(project, projects);
+        const projectsContainer = document.querySelector('.projects-container');
+        projectsContainer.style.position = 'relative';
+        projectsContainer.style.top = `${Math.abs(this.timelineOffset)}px`;
+
+        // Calculate the maximum timeline width
+        const maxLane = Math.max(...projects.map(p => p.lane));
+        this.timelinesWidth = this.BASE_OFFSET + ((maxLane + 1) * this.LANE_SPACING);
+
+        // Sort projects by start position and lane
+        const sortedProjects = [...projects].sort((a, b) => {
+            if (Math.abs(a.startPos - b.startPos) < 50) {
+                return a.lane - b.lane;
+            }
+            return a.startPos - b.startPos;
         });
 
-        this.adjustContainerWidth();
+        sortedProjects.forEach(project => this.positionProject(project));
+        this.adjustContainerWidth(projects);
     }
 
-    positionProject(project, allProjects) {
+
+    positionProject(project) {
         const timeline = project.element;
         const line = timeline.querySelector('.project-line');
         const content = timeline.querySelector('.project-content');
-
-        this.positionTimeline(line, project);
-        this.positionDots(line);
-
+        
+        const horizontalPos = this.BASE_OFFSET + (project.lane * this.LANE_SPACING);
+        
+        // Position the line
+        if (line) {
+            line.style.position = 'absolute';
+            line.style.left = `${horizontalPos}px`;
+            line.style.top = `${project.startPos}px`;
+            line.style.height = `${Math.max(project.endPos - project.startPos, 2)}px`;
+        }
+        
+        // Position the content box
         if (content) {
-            this.positionContent(content, project, allProjects);
-        }
-    }
-
-    positionTimeline(line, project) {
-        const horizontalOffset = project.lane * this.LANE_OFFSET - this.LANE_OFFSET;
-        line.style.position = 'absolute';
-        line.style.top = `${project.startPos}px`;
-        line.style.height = `${project.endPos - project.startPos}px`;
-        line.style.left = `${horizontalOffset}px`;
-    }
-
-    positionDots(line) {
-        const startDot = line.querySelector('.start-dot');
-        const endDot = line.querySelector('.end-dot');
-        [startDot, endDot].forEach(dot => {
-            dot.style.left = '-5px';
-        });
-        startDot.style.top = '0';
-        endDot.style.top = '100%';
-    }
-
-    positionContent(content, project, allProjects) {
-        const timelineCenter = project.startPos + (project.endPos - project.startPos) / 2;
-        const contentHeight = content.offsetHeight + this.CONTENT_PADDING;
-        const intendedTop = timelineCenter - contentHeight / 2 + this.CONTENT_PADDING;
-        const baseContentOffset = (Math.max(...allProjects.map(p => p.lane)) + 1) * this.LANE_OFFSET - this.LANE_OFFSET;
-
-        const position = this.findContentPosition(intendedTop, contentHeight, baseContentOffset);
-        
-        if (position) {
-            content.style.left = `${position.left}px`;
-            content.style.top = `${position.top}px`;
-            this.placedBoxes.push(position);
-        }
-    }
-
-    findContentPosition(intendedTop, contentHeight, baseContentOffset) {
-        const overlappingBoxes = this.getOverlappingBoxes(intendedTop, contentHeight);
-        const shiftStep = this.BOX_WIDTH + 2;
-
-        for (let shift = 0; shift <= overlappingBoxes.length; shift++) {
-            const candidateLeft = baseContentOffset + shift * shiftStep;
-            if (!this.hasPositionConflict(candidateLeft, this.BOX_WIDTH, overlappingBoxes)) {
-                return {
-                    left: candidateLeft,
-                    top: intendedTop,
-                    right: candidateLeft + this.BOX_WIDTH,
-                    bottom: intendedTop + contentHeight
-                };
+            content.style.position = 'absolute';
+            const contentHeight = content.offsetHeight || 0;
+            const verticalCenter = project.startPos + (project.endPos - project.startPos) / 2;
+            const contentTop = verticalCenter - (contentHeight / 2);
+            
+            // Start positioning from the end of all timelines
+            let contentLeft = this.timelinesWidth + this.CONTENT_OFFSET;
+            
+            // Check for overlaps and adjust position
+            while (this.checkContentOverlap(contentLeft, contentTop, contentHeight)) {
+                contentLeft += this.BOX_WIDTH + this.BOX_SPACING;
             }
+            
+            content.style.left = `${contentLeft}px`;
+            content.style.top = `${contentTop}px`;
+            
+            this.placedBoxes.push({
+                left: contentLeft,
+                right: contentLeft + this.BOX_WIDTH,
+                top: contentTop,
+                bottom: contentTop + contentHeight
+            });
         }
-        return null;
     }
 
-    getOverlappingBoxes(top, height) {
-        return this.placedBoxes.filter(box => 
-            (top < box.bottom) && (top + height > box.top)
-        );
+    checkContentOverlap(left, top, height) {
+        return this.placedBoxes.some(box => {
+            const verticalOverlap = top < box.bottom && (top + height) > box.top;
+            const horizontalOverlap = left < box.right && (left + this.BOX_WIDTH) > box.left;
+            return verticalOverlap && horizontalOverlap;
+        });
     }
 
-    hasPositionConflict(left, width, overlappingBoxes) {
-        return overlappingBoxes.some(box => 
-            left < box.right && left + width > box.left
-        );
-    }
-
-    adjustContainerWidth() {
-        if (this.placedBoxes.length === 0) return;
+    adjustContainerWidth(projects) {
+        if (projects.length === 0) return;
         
-        const maxRight = Math.max(...this.placedBoxes.map(box => box.right));
-        const projectsContainer = document.querySelector('.projects-container');
-        projectsContainer.style.minWidth = `${maxRight + 20}px`;
+        const maxRight = Math.max(
+            ...this.placedBoxes.map(box => box.right),
+            this.BASE_OFFSET + 
+            (Math.max(...projects.map(p => p.lane)) + 1) * this.LANE_SPACING + 
+            this.BOX_WIDTH
+        );
+        
+        const container = document.querySelector('.projects-container');
+        container.style.minWidth = `${maxRight + 40}px`;
     }
 
     resetPositions() {
         this.placedBoxes = [];
         this.manager.projectTimelines.forEach(timeline => {
             const content = timeline.querySelector('.project-content');
+            const line = timeline.querySelector('.project-line');
+            
             if (content) {
                 content.style.left = '';
                 content.style.top = '';
+            }
+            if (line) {
+                line.style.left = '';
+                line.style.top = '';
+                line.style.height = '';
             }
         });
         this.processProjects();
     }
 }
 
-
-// ColorManager class
-class ColorManager {
-    constructor() {
-        this.colors = [
-            '#E63946', // Imperial Red
-            '#2A9D8F', // Persian Green
-            '#264653', // Charcoal
-            '#1ABC9C', // Turquoise
-            '#F4A261', // Sandy Brown
-            '#4A90E2', // Bright Blue
-            '#8E44AD', // Wisteria
-            '#27AE60', // Nephritis
-            '#E67E22', // Carrot
-            '#C0392B', // Pomegranate
-            '#1ABC9C', // Turquoise
-            '#F39C12', // Orange
-            '#7D3C98', // Purple
-            '#2ECC71', // Emerald
-            '#E74C3C', // Alizarin
-            '#3498DB'  // Peter River
-        ];
-    }
-
-    hexToRGB(hex) {
-        hex = hex.replace('#', '');
-        
-        if (hex.length === 3) {
-            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-        }
-        
-        return {
-            r: parseInt(hex.substring(0, 2), 16),
-            g: parseInt(hex.substring(2, 4), 16),
-            b: parseInt(hex.substring(4, 6), 16)
-        };
-    }
-
-    generateClientColors(projectTimelines) {
-        const clientColors = {};
-        const clients = new Set();
-        
-        projectTimelines.forEach(timeline => {
-            const clientText = timeline.querySelector('.project-client')?.textContent || '';
-            if (clientText) {
-                const clientName = clientText.replace('Client:', '').trim();
-                clients.add(clientName);
-            }
-        });
-
-        Array.from(clients).sort().forEach((client, index) => {
-            clientColors[client] = this.colors[index % this.colors.length];
-        });
-
-        return clientColors;
-    }
-
-    applyClientColors(projectTimelines, clientColors) {
-        this.applyTimelineColors(projectTimelines, clientColors);
-        this.applyButtonColors(clientColors);
-    }
-
-    applyTimelineColors(projectTimelines, clientColors) {
-        projectTimelines.forEach(timeline => {
-            const clientText = timeline.querySelector('.project-client')?.textContent || '';
-            const clientName = clientText.replace('Client:', '').trim();
-            const color = clientColors[clientName];
-            
-            if (color) {
-                const content = timeline.querySelector('.project-content');
-                if (content) {
-                    content.style.borderLeft = `4px solid ${color}`;
-                    content.dataset.clientColor = color;
-                }
-
-                const line = timeline.querySelector('.project-line');
-                if (line) {
-                    line.style.backgroundColor = color;
-                    line.style.setProperty('--timeline-color', color);
-                }
-
-                const dots = timeline.querySelectorAll('.project-dot');
-                dots.forEach(dot => {
-                    dot.style.borderColor = color;
-                });
-            }
-        });
-    }
-
-    applyButtonColors(clientColors) {
-        document.querySelectorAll('.client-btn').forEach(btn => {
-            const clientName = btn.dataset.client;
-            const color = clientColors[clientName];
-            if (color && clientName) {
-                this.setupClientButton(btn, color);
-            }
-        });
-    }
-
-    setupClientButton(btn, color) {
-        btn.style.borderColor = color;
-        btn.style.borderWidth = '2px';
-        
-        btn.addEventListener('mouseenter', () => {
-            btn.style.backgroundColor = color;
-            btn.style.color = '#fff';
-        });
-        
-        btn.addEventListener('mouseleave', () => {
-            if (!btn.classList.contains('active')) {
-                btn.style.backgroundColor = 'var(--sidebar-bg)';
-                btn.style.color = 'var(--text-color)';
-            }
-        });
-    }
-}
-
-
+// Source: _javascript/timeline/managers/ZoomManager.js
 class TimelineZoom {
     constructor(timelineManager) {
         this.manager = timelineManager;
@@ -460,7 +456,6 @@ class TimelineZoom {
         this.MAX_ZOOM = 2;
         this.initialize();
     }
-
 
     initialize() {
         const zoomIn = document.getElementById('zoomIn');
@@ -472,6 +467,10 @@ class TimelineZoom {
             return;
         }
 
+        this.setupZoomHandlers(zoomIn, zoomOut, resetZoom);
+    }
+
+    setupZoomHandlers(zoomIn, zoomOut, resetZoom) {
         zoomIn.addEventListener('click', () => {
             try {
                 this.applyZoom(this.currentZoom + this.ZOOM_STEP);
@@ -513,47 +512,8 @@ class TimelineZoom {
     }
 }
 
-class TimelineManager {
-    constructor() {
-        this.yearHeight = 250;
-        this.projectTimelines = document.querySelectorAll('.project-timeline');
-        this.yearMarkers = document.querySelectorAll('.year-marker');
-        this.firstYear = parseInt(this.yearMarkers[0].querySelector('.year-label').textContent);
-        
-        // Initialize managers
-        this.colorManager = new ColorManager();
-        this.clientColors = this.colorManager.generateClientColors(this.projectTimelines);
-        this.zoomManager = new TimelineZoom(this);
-        this.positioner = new ProjectPositioner(this);
-        this.filterManager = new FilterManager(this);
-    }
-
-    initializeModalHandlers() {
-        const modal = document.getElementById('projectModal');
-        const closeBtn = modal.querySelector('.modal-close');
-        const clickableArea = modal.querySelector('.modal-clickable');
-    
-        closeBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            modal.style.display = 'none';
-        });
-    
-        clickableArea.addEventListener('click', (event) => {
-            const projectUrl = modal.dataset.projectUrl;
-            if (projectUrl) {
-                window.location.href = projectUrl;
-            }
-        });
-    
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    }
-
-
-
+// Source: _javascript/timeline/utils/DOMutils.js
+const DOMUtils = {
     setupDottedLine() {
         const currentYearMarker = document.querySelector('.current-year');
         if (!currentYearMarker) {
@@ -563,32 +523,61 @@ class TimelineManager {
     
         try {
             const currentDate = new Date();
-            const currentMonth = currentDate.getMonth(); // 0-11
-            const currentDay = currentDate.getDate(); // 1-31
+            const currentMonth = currentDate.getMonth();
+            const currentDay = currentDate.getDate();
             const yearHeight = currentYearMarker.offsetHeight;
             const monthHeight = yearHeight / 12;
-            const dayHeight = monthHeight / 31; // Approximate days in a month
+            const dayHeight = monthHeight / 31;
             
-            // Calculate where to start the dotted line
             const currentYearTop = currentYearMarker.offsetTop;
             const monthOffset = currentMonth * monthHeight;
             const dayOffset = currentDay * dayHeight;
             const startDottedLine = currentYearTop + monthOffset + dayOffset;
             
-            // Set the CSS variable for both lines
             document.documentElement.style.setProperty('--dotted-line-start', `${startDottedLine}px`);
         } catch (e) {
             console.log('Error setting up dotted line:', e);
         }
     }
+};
+
+// Source: _javascript/timeline/TimelineManager.js
+class TimelineManager {
+    constructor() {
+        this.monthHeight = 40;
+        this.projectTimelines = document.querySelectorAll('.project-timeline');
+        
+        // Get the earliest project date
+        const projectDates = Array.from(this.projectTimelines)
+            .map(timeline => {
+                const datesText = timeline.querySelector('.project-dates').textContent;
+                const startStr = datesText.split(' - ')[0];
+                return new Date(startStr);
+            });
+
+        const earliestDate = new Date(Math.min(...projectDates));
+        
+        this.firstYear = earliestDate.getFullYear();
+        
+        this.yearMarkers = document.querySelectorAll('.year-marker');
+        this.monthMarkers = document.querySelectorAll('.month-marker');
+        this.allMarkers = document.querySelectorAll('.year-marker, .month-marker');
+
+        // Initialize managers in correct order
+        this.initializeManagers();
+    }
+
+    initializeManagers() {
+        // Initialize each manager separately
+        this.colorManager = new ColorManager();
+        this.clientColors = this.colorManager.generateClientColors(this.projectTimelines);
+        this.zoomManager = new TimelineZoom(this);
+        this.positioner = new ProjectPositioner(this);
+        this.filterManager = new FilterManager(this);
+    }
 
     initialize() {
-        this.yearMarkers.forEach(marker => {
-            marker.style.position = 'relative';
-            const dot = marker.querySelector('.year-dot');
-            dot.style.top = '0';
-        });
-    
+        this.initializeMarkers();
         this.setupProjectHandlers();
         this.initializeModalHandlers();
         this.colorManager.applyClientColors(this.projectTimelines, this.clientColors);
@@ -597,76 +586,25 @@ class TimelineManager {
             this.positioner.processProjects();
             this.filterManager.adjustFilterSections();
         });
-        this.setupDottedLine();
     }
 
+    initializeMarkers() {
+        // Set initial positions for year and month markers
+        this.allMarkers.forEach(marker => {
+            marker.style.position = 'relative';
+            if (marker.classList.contains('year-marker')) {
+                const dot = marker.querySelector('.year-dot');
+                if (dot) dot.style.top = '50%';
+            }
+        });
 
-    initializeLayout() {
-        this.positioner.resetPositions();
-        this.positioner.processProjects();
-    }
-
-    showProjectDetails(timeline) {
-        const modal = document.getElementById('projectModal');
-        const title = document.getElementById('modalTitle');
-        const client = document.getElementById('modalClient');
-        const dates = document.getElementById('modalDates');
-        const description = document.getElementById('modalDescription');
-        const skills = document.getElementById('modalSkills');
-    
-        // Get project data
-        const projectTitle = timeline.querySelector('h3').textContent;
-        const projectClient = timeline.querySelector('.project-client')?.textContent || '';
-        const projectDates = timeline.querySelector('.project-dates')?.textContent || '';
-        const projectSkills = timeline.dataset.skills?.split(',') || [];
-        const projectDescription = timeline.dataset.description || 'No description available.';
-        const projectUrl = timeline.dataset.url; // Get the URL from the timeline
-    
-        console.log('Project URL:', projectUrl); // Debug log
-    
-        // Store the project URL in the modal's dataset
-        modal.dataset.projectUrl = projectUrl;
-    
-        // Update modal content
-        title.textContent = projectTitle;
-        client.textContent = projectClient;
-        dates.textContent = projectDates;
-        description.textContent = projectDescription;
-        
-        // Update skills
-        skills.innerHTML = projectSkills
-            .map(skill => `<span>${skill.trim()}</span>`)
-            .join('');
-    
-        // Show modal
-        modal.style.display = 'block';
-    }
-
- 
-
-    adjustFilterSections() {
-        // Count unique clients and skills
-        const clientCount = new Set(Array.from(this.projectTimelines)
-            .map(timeline => timeline.querySelector('.project-client')?.textContent)
-            .filter(Boolean)).size;
-    
-        const skillCount = new Set(Array.from(this.projectTimelines)
-            .map(timeline => timeline.dataset.skills?.split(',') || [])
-            .flat()
-            .filter(Boolean)).size;
-    
-        // Calculate proportions
-        const total = clientCount + skillCount;
-        const clientProportion = (clientCount / total) * 100;
-        const skillsProportion = (skillCount / total) * 100;
-    
-        // Apply proportions to sections
-        const clientSection = document.querySelector('.filter-group:nth-child(1)');
-        const skillsSection = document.querySelector('.filter-group:nth-child(2)');
-        
-        if (clientSection && skillsSection) {
-            clientSection.style.setProperty('--section-width', `${clientProportion}%`);
-            skillsSection.style.setProperty('--section-width', `${skillsProportion}%`);
+        // Position the present marker if it exists
+        const presentMarker = document.querySelector('.present-marker');
+        if (presentMarker) {
+            const parentMarker = presentMarker.closest('.month-marker, .year-marker');
+            if (parentMarker) {
+                presentMarker.style.top = '50%';
+            }
         }
     }
 
@@ -689,129 +627,89 @@ class TimelineManager {
         });
     }
 
- 
+    initializeModalHandlers() {
+        const modal = document.getElementById('projectModal');
+        const closeBtn = modal.querySelector('.modal-close');
+        const clickableArea = modal.querySelector('.modal-clickable');
 
-    getVerticalPosition(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
-        const baseYearHeight = this.yearHeight * this.zoomManager.getCurrentZoom();
-        const yearOffset = (year - this.firstYear) * baseYearHeight;
-        const monthOffset = (month / 12) * baseYearHeight;
-        const dayOffset = (day / 30) * (baseYearHeight / 12);
-        return yearOffset + monthOffset + dayOffset;
-    }
+        closeBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            modal.style.display = 'none';
+        });
 
-
-    positionProjects(projects) {
-        // Clear existing positions
-        this.placedBoxes = [];
-        
-        projects.forEach(project => {
-            const timeline = project.element;
-            const line = timeline.querySelector('.project-line');
-            const content = timeline.querySelector('.project-content');
-    
-            // Position timeline
-            const horizontalOffset = project.lane * 15-15;
-            line.style.position = 'absolute';
-            line.style.top = `${project.startPos}px`;
-            line.style.height = `${project.endPos - project.startPos}px`;
-            line.style.left = `${horizontalOffset}px`;
-    
-            // Position dots
-            const startDot = line.querySelector('.start-dot');
-            const endDot = line.querySelector('.end-dot');
-            startDot.style.top = '0';
-            endDot.style.top = '100%';
-            startDot.style.left = '-5px';
-            endDot.style.left = '-5px';
-    
-            // Position content box
-            if (content) {
-                content.style.position = 'absolute';
-                content.style.width = '210px';
-    
-                const timelineCenter = project.startPos + (project.endPos - project.startPos) / 2;
-                const contentHeight = content.offsetHeight + 5;
-                const intendedTop = timelineCenter - contentHeight / 2 + 5;
-    
-                const baseContentOffset = (Math.max(...projects.map(p => p.lane)) + 1) * 15-15;
-                
-                // Modified overlap detection
-                const overlappingBoxes = this.placedBoxes.filter(box => {
-                    const verticalOverlap = (intendedTop < box.bottom) && (intendedTop + contentHeight > box.top);
-                    return verticalOverlap;
-                });
-    
-                const boxWidth = 210;
-                const shiftStep = boxWidth + 2;
-                let finalPosition = null;
-    
-                // Try positions until no overlap
-                for (let shift = 0; shift <= overlappingBoxes.length; shift++) {
-                    const candidateLeft = baseContentOffset + shift * shiftStep;
-                    let hasConflict = false;
-    
-                    for (const box of overlappingBoxes) {
-                        if (candidateLeft < box.right && candidateLeft + boxWidth > box.left) {
-                            hasConflict = true;
-                            break;
-                        }
-                    }
-    
-                    if (!hasConflict) {
-                        finalPosition = {
-                            left: candidateLeft,
-                            top: intendedTop,
-                            right: candidateLeft + boxWidth,
-                            bottom: intendedTop + contentHeight
-                        };
-                        break;
-                    }
-                }
-    
-                if (finalPosition) {
-                    content.style.left = `${finalPosition.left}px`;
-                    content.style.top = `${finalPosition.top}px`;
-                    this.placedBoxes.push(finalPosition);
-                }
+        clickableArea.addEventListener('click', () => {
+            const projectUrl = modal.dataset.projectUrl;
+            if (projectUrl) {
+                window.location.href = projectUrl;
             }
         });
-    
-        // Adjust container width
-        const maxRight = Math.max(...this.placedBoxes.map(box => box.right));
-        const projectsContainer = document.querySelector('.projects-container');
-        projectsContainer.style.minWidth = `${maxRight + 20}px`;
+
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    showProjectDetails(timeline) {
+        const modal = document.getElementById('projectModal');
+        const projectData = this.extractProjectData(timeline);
+        this.updateModalContent(modal, projectData);
+        modal.style.display = 'block';
+    }
+
+    extractProjectData(timeline) {
+        return {
+            title: timeline.querySelector('h3').textContent,
+            client: timeline.querySelector('.project-client')?.textContent || '',
+            dates: timeline.querySelector('.project-dates')?.textContent || '',
+            skills: timeline.dataset.skills?.split(',') || [],
+            description: timeline.dataset.description || 'No description available.',
+            url: timeline.dataset.url
+        };
+    }
+
+    updateModalContent(modal, data) {
+        modal.dataset.projectUrl = data.url;
+        document.getElementById('modalTitle').textContent = data.title;
+        document.getElementById('modalClient').textContent = data.client;
+        document.getElementById('modalDates').textContent = data.dates;
+        document.getElementById('modalDescription').textContent = data.description;
+        document.getElementById('modalSkills').innerHTML = 
+            data.skills.map(skill => `<span>${skill.trim()}</span>`).join('');
     }
 
     processProjects() {
         this.positioner.processProjects();
     }
 
-    // Update zoom handling
     updateZoom(zoomLevel) {
-        const newYearHeight = this.yearHeight * zoomLevel;
-        this.yearMarkers.forEach(marker => {
-            marker.style.height = `${newYearHeight}px`;
+        const newMonthHeight = this.monthHeight * zoomLevel;
+        this.allMarkers.forEach(marker => {
+            marker.style.height = `${newMonthHeight}px`;
         });
-        this.positioner.processProjects();
+        this.processProjects();
     }
 
     resetPositions() {
+        this.allMarkers.forEach(marker => {
+            marker.style.height = `${this.monthHeight}px`;
+        });
         this.positioner.resetPositions();
     }
 
-
-    getYearHeight() {
-        return this.yearHeight;
+    getMonthHeight() {
+        return this.monthHeight;
     }
 
-    
+    getTotalHeight() {
+        return this.allMarkers.length * this.monthHeight;
+    }
 }
+
+// Source: _javascript/timeline/main.js
 
 document.addEventListener('DOMContentLoaded', function() {
     const timeline = new TimelineManager();
     timeline.initialize();
 });
-

@@ -1,4 +1,4 @@
-export class FilterManager {
+class FilterManager {
     constructor(timelineManager) {
         this.manager = timelineManager;
         this.activeClients = new Set();

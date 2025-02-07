@@ -8,11 +8,11 @@ namespace :js do
       
       # Define source files in order of dependency
       js_files = [
-        '_javascript/timeline/utils/DOMUtils.js',
         '_javascript/timeline/managers/ColorManager.js',
         '_javascript/timeline/managers/FilterManager.js',
         '_javascript/timeline/managers/ProjectPositioner.js',
-        '_javascript/timeline/managers/TimelineZoom.js',
+        '_javascript/timeline/managers/ZoomManager.js',
+        '_javascript/timeline/utils/DOMutils.js',
         '_javascript/timeline/TimelineManager.js',
         '_javascript/timeline/main.js'
       ]
@@ -29,6 +29,3 @@ namespace :js do
       puts "JavaScript build complete!"
     end
   end
-  
-  # Hook into Jekyll's build process
-  task :jekyll_build => ['js:build']

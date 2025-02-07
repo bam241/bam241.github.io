@@ -1,4 +1,4 @@
-export const DOMUtils = {
+const DOMUtils = {
     setupDottedLine() {
         const currentYearMarker = document.querySelector('.current-year');
         if (!currentYearMarker) {

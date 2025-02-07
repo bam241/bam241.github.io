@@ -1,4 +1,4 @@
-export class ColorManager {
+class ColorManager {
     constructor() {
         this.colors = [
             '#E63946', '#2A9D8F', '#264653', '#1ABC9C',

@@ -1,7 +1,7 @@
 .zoom-controls {
     position: fixed;
-    top: 20px;  /* Changed from bottom: 1200px */
-    left: 20px; /* Changed from right: 200px */
+    bottom: 1200px; 
+    right: 200px;
     background: var(--sidebar-bg);
     padding: 8px;
     border-radius: 8px;
@@ -11,7 +11,6 @@
     gap: 5px;
 }
 
-/* Rest of the CSS remains the same */
 .zoom-btn {
     width: 30px;
     height: 30px;
