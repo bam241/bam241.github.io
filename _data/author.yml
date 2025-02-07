@@ -1,0 +1,53 @@
+# Basic Info
+name: Baptiste Mouginot
+title: Freelance Scientific Developer / Nuclear Physics Expert
+description: |
+  I am a dedicated scientific researcher and consultant with a strong focus on nuclear physics and engineering. At BaM
+  Scientific Consulting, I have successfully managed and contributed to projects involving the development of interfaces
+  and analytical tools using Python and C++ for clients such as NAAREA and First Light Fusion. My expertise includes Monte
+  Carlo simulations and the implementation of best practices in scientific development and analysis.
+
+  As a scientist at the University of Wisconsin-Madison, I developed tools for stochastic uncertainty propagation and
+  enrichment cascade simulations, contributing to significant studies in nuclear non-proliferation. My role involved
+  community management, user support, and integrating neural network models within simulation environments.
+
+  I am proficient in a range of technical skills, including Python, C++, OpenMC, and software development tools such as
+  Git, Docker, and Pandas. My work emphasizes continuous integration and the application of algorithms to address complex
+  scientific problems, ensuring adherence to best practices in scientific development.
+
+services_offered: |
+  I specialize in providing consulting services in nuclear engineering,
+  focusing on enhancing the quality and sustainability of scientific software
+  projects. While the following are the main services I offer, this list is not
+  exhaustive:
+
+  - **Implementation of Best Practices:** I assist in planning and executing
+    strategies to incorporate best practices in software development, including
+    comprehensive testing (unit, regression), continuous integration, and
+    effective distribution methods to ensure long-term maintainability.
+
+  - **Training on Best Practices:** I offer training sessions to help teams
+    adopt and implement best practices in software development and scientific
+    analysis, ensuring that your team is equipped with the skills needed for
+    sustainable project success.
+
+  - **Software and Workflow Development:** My services include bug fixing, code
+    optimization, test implementation, and setting up virtual environments to
+    streamline your software and workflows.
+
+  - **Analysis Tool Development:** I develop custom tools to facilitate data
+    analysis and enhance the efficiency of your engineering processes.
+
+  - **Simulation and Analysis Support:** From setting up experimental layouts
+    and building input files to executing batch runs and conducting detailed
+    analyses, I provide end-to-end support for your simulation needs.
+
+  If you are interested in leveraging my expertise for these or other related
+  activities, please feel free to reach out. I am open to exploring different
+  ways to collaborate that suit your needs.
+
+# Social Media
+github: bam241
+linkedin: baptiste-mouginot-75992520
+email: mouginot.baptiste@gmail.com
+phone: +33 6 52 52 52 52
