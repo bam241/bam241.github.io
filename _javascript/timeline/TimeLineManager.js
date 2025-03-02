@@ -120,7 +120,7 @@ class TimelineManager {
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
             skills: timeline.dataset.skills?.split(',') || [],
-            description: timeline.dataset.description || 'No description available.',
+            description: timeline.querySelector('.project-description')?.textContent || 'No description available.',
             url: timeline.dataset.url
         };
     }
