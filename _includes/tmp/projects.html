@@ -1,24 +1,28 @@
 <div class="projects-container">
-    {% for project in include.projects %}
-      <div class="project-timeline">
-        <div class="project-line">
-          <div class="project-dot start-dot"></div>
-          <div class="project-dot end-dot"></div>
-        </div>
-        <div class="project-content">
-          <h3>{{ project.title }}</h3>
-          {% if project.client %}
-            <p class="project-client"><strong>Client:</strong> {{ project.client }}</p>
-          {% endif %}
-          <p class="project-dates">
-            {{ project.start_date | date: "%Y/%m/%d" }} - 
-            {% if project.end_date %}
-              {{ project.end_date | date: "%Y/%m/%d" }}
-            {% else %}
-              Present
-            {% endif %}
-          </p>
-        </div>
+  {% for project in include.projects %}
+    <div class="project-timeline" 
+         data-title="{{ project.title }}"
+         data-description="{{ project.description }}"
+         data-skills="{{ project.skills | join: ',' }}"
+         data-url="{{ project.url }}">
+      <div class="project-line">
+        <div class="project-dot start-dot"></div>
+        <div class="project-dot end-dot"></div>
       </div>
-    {% endfor %}
-  </div>
+      <div class="project-content">
+        <h3>{{ project.title }}</h3>
+        {% if project.client %}
+          <p class="project-client"><strong>Client:</strong> {{ project.client.name }}</p>
+        {% endif %}
+        <p class="project-dates">
+          {{ project.start_date | date: "%Y/%m/%d" }} - 
+          {% if project.end_date %}
+            {{ project.end_date | date: "%Y/%m/%d" }}
+          {% else %}
+            Present
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  {% endfor %}
+</div>

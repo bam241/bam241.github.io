@@ -694,12 +694,17 @@ class TimelineManager {
     }
 
     extractProjectData(timeline) {
+        const projectTitle = timeline.querySelector('h3').textContent;
+        
+        // Find the corresponding project element by matching the title
+        const projectElement = document.querySelector(`[data-title="${projectTitle}"]`);
+        
         return {
-            title: timeline.querySelector('h3').textContent,
+            title: projectTitle,
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
-            skills: timeline.dataset.skills?.split(',') || [],
-            description: timeline.querySelector('.project-description')?.textContent || 'No description available.',
+            skills: projectElement ? projectElement.dataset.skills?.split(',') : [],
+            description: projectElement ? projectElement.dataset.description : 'No description available.',
             url: timeline.dataset.url
         };
     }
