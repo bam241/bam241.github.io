@@ -114,58 +114,25 @@ class TimelineManager {
         modal.style.display = 'block';
     }
 
-    // extractProjectData(timeline) {
-    //     const title = timeline.querySelector('h3').textContent;
-        
-    //     return {
-    //         title: title,
-    //         client: timeline.querySelector('.project-client')?.textContent || '',
-    //         dates: timeline.querySelector('.project-dates')?.textContent || '',
-    //         description: timeline.dataset.description || 'No description available.',
-    //         skills: (timeline.dataset.skills || '').split(','),
-    //         url: timeline.dataset.url
-    //     };
-    // }
-
     extractProjectData(timeline) {
-        console.log('Timeline Element:', timeline);
-        
         const title = timeline.querySelector('h3').textContent;
-        console.log('Project Title:', title);
         
-        // Try multiple ways to get the description
-        const descriptionElement = timeline.querySelector('.project-description');
-        const datasetDescription = timeline.dataset.description;
-        
-        console.log('Dataset Description:', datasetDescription);
-        console.log('Description Element:', descriptionElement);
-        
-        const description = 
-            datasetDescription || 
-            (descriptionElement ? descriptionElement.textContent.trim() : 'No description available.');
-    
         return {
             title: title,
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
-            description: description,
+            description: timeline.dataset.description || 'No description available.',
             skills: (timeline.dataset.skills || '').split(','),
             url: timeline.dataset.url
         };
     }
 
     updateModalContent(modal, data) {
-        console.log('Modal Data:', data);
-        
         modal.dataset.projectUrl = data.url;
         document.getElementById('modalTitle').textContent = data.title;
         document.getElementById('modalClient').textContent = data.client;
         document.getElementById('modalDates').textContent = data.dates;
-        
-        // Log the description before setting
-        console.log('Description to set:', data.description);
         document.getElementById('modalDescription').textContent = data.description;
-        
         document.getElementById('modalSkills').innerHTML = 
             data.skills.map(skill => `<span>${skill.trim()}</span>`).join('');
     }
