@@ -1,7 +1,7 @@
 ---
 layout: project
 title: "Atomic Mass Management"
-the_description: "This contract focused on enhancing FirstLightFusion's use of
+description: "This contract focused on enhancing FirstLightFusion's use of
   nuclear physics simulation framework's capability to access and utilize
   elemental mass data."
 start_date: 2023-12-25
