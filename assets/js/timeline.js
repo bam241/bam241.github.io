@@ -694,18 +694,24 @@ class TimelineManager {
     }
 
     extractProjectData(timeline) {
-        const projectTitle = timeline.querySelector('h3').textContent;
+        console.log('Timeline:', timeline);
+        const title = timeline.querySelector('h3').textContent;
+        console.log('Title:', title);
         
-        // Find the corresponding project element by matching the title
-        const projectElement = document.querySelector(`[data-title="${projectTitle}"]`);
+        // Try different selection methods
+        const projectElement = document.querySelector(`[data-title="${title}"]`);
+        console.log('Project Element:', projectElement);
         
+        if (projectElement) {
+            console.log('Description from data:', projectElement.dataset.description);
+        }
+    
         return {
-            title: projectTitle,
+            title: title,
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
-            skills: projectElement ? projectElement.dataset.skills?.split(',') : [],
             description: projectElement ? projectElement.dataset.description : 'No description available.',
-            url: timeline.dataset.url
+            skills: projectElement ? (projectElement.dataset.skills || '').split(',') : []
         };
     }
 
