@@ -713,23 +713,21 @@ class TimelineManager {
         console.log('Project Title:', title);
         
         // Try multiple ways to get the description
-        console.log('Dataset Description:', timeline.dataset.description);
+        const descriptionElement = timeline.querySelector('.project-description');
+        const datasetDescription = timeline.dataset.description;
         
-        // Try to find the project page element
-        const projectPage = document.querySelector(`[data-project-title="${title}"]`);
-        console.log('Project Page Element:', projectPage);
+        console.log('Dataset Description:', datasetDescription);
+        console.log('Description Element:', descriptionElement);
         
-        if (projectPage) {
-            console.log('Description from Project Page:', projectPage.dataset.description);
-        }
+        const description = 
+            datasetDescription || 
+            (descriptionElement ? descriptionElement.textContent.trim() : 'No description available.');
     
         return {
             title: title,
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
-            description: (timeline.dataset.description || 
-                          (projectPage ? projectPage.dataset.description : '') || 
-                          'No description available.'),
+            description: description,
             skills: (timeline.dataset.skills || '').split(','),
             url: timeline.dataset.url
         };
