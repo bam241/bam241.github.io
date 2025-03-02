@@ -114,25 +114,60 @@ class TimelineManager {
         modal.style.display = 'block';
     }
 
-    extractProjectData(timeline) {
-        const title = timeline.querySelector('h3').textContent;
+    // extractProjectData(timeline) {
+    //     const title = timeline.querySelector('h3').textContent;
         
+    //     return {
+    //         title: title,
+    //         client: timeline.querySelector('.project-client')?.textContent || '',
+    //         dates: timeline.querySelector('.project-dates')?.textContent || '',
+    //         description: timeline.dataset.description || 'No description available.',
+    //         skills: (timeline.dataset.skills || '').split(','),
+    //         url: timeline.dataset.url
+    //     };
+    // }
+
+    extractProjectData(timeline) {
+        console.log('Timeline Element:', timeline);
+        
+        const title = timeline.querySelector('h3').textContent;
+        console.log('Project Title:', title);
+        
+        // Try multiple ways to get the description
+        console.log('Dataset Description:', timeline.dataset.description);
+        
+        // Try to find the project page element
+        const projectPage = document.querySelector(`[data-project-title="${title}"]`);
+        console.log('Project Page Element:', projectPage);
+        
+        if (projectPage) {
+            console.log('Description from Project Page:', projectPage.dataset.description);
+        }
+    
         return {
             title: title,
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
-            description: timeline.dataset.description || 'No description available.',
+            description: (timeline.dataset.description || 
+                          (projectPage ? projectPage.dataset.description : '') || 
+                          'No description available.'),
             skills: (timeline.dataset.skills || '').split(','),
             url: timeline.dataset.url
         };
     }
 
     updateModalContent(modal, data) {
+        console.log('Modal Data:', data);
+        
         modal.dataset.projectUrl = data.url;
         document.getElementById('modalTitle').textContent = data.title;
         document.getElementById('modalClient').textContent = data.client;
         document.getElementById('modalDates').textContent = data.dates;
+        
+        // Log the description before setting
+        console.log('Description to set:', data.description);
         document.getElementById('modalDescription').textContent = data.description;
+        
         document.getElementById('modalSkills').innerHTML = 
             data.skills.map(skill => `<span>${skill.trim()}</span>`).join('');
     }

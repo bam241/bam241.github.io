@@ -8,8 +8,10 @@
         <div class="project-dot start-dot"></div>
         <div class="project-dot end-dot"></div>
     </div>
-    <div class="project-content">
-        <h3>{{ project.title }}</h3>
+    <div data-project-title="{{ page.title }}" 
+    data-description="{{ page.description | escape }}"
+    style="display:none;">
+    <h3>{{ project.title }}</h3>
         {% if project.client %}
             <p class="project-client"><strong>Client:</strong> {{ project.client.name }}</p>
         {% endif %}
