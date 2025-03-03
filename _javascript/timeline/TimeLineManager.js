@@ -121,7 +121,7 @@ class TimelineManager {
             title: title,
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
-            description: timeline.dataset.short_description || 'No description available.',
+            description: timeline.dataset.short_description || timeline.dataset.description || 'No description available.',
             skills: (timeline.dataset.skills || '').split(','),
             url: timeline.dataset.url
         };
