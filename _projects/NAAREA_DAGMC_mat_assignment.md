@@ -20,7 +20,7 @@ recommendation_text: "Baptiste has been a great partner for the past 3 years (on
 - combining both self-reliance & reporting at a good level of details when working on a more massive project
 
 Baptiste's communication & interpersonal skills are a great strength for his future partners, he will give you a sincere and honest feedback of
-how it was, how it is, how it should be & how it could be, regarding your obligations & constraints".
+how it was, how it is, how it should be & how it could be, regarding your obligations & constraints.
 
 Flexible he is, putting your satisfaction on top priority !
 
