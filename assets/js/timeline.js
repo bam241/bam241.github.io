@@ -695,14 +695,12 @@ class TimelineManager {
 
     extractProjectData(timeline) {
         const title = timeline.querySelector('h3').textContent;
-        const short_description = timeline.dataset.short_description || '';
-        const description = short_description || timeline.dataset.description;
         
         return {
             title: title,
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
-            description: description || 'No description available.',
+            description: timeline.dataset.short_description || 'No description available.',
             skills: (timeline.dataset.skills || '').split(','),
             url: timeline.dataset.url
         };
