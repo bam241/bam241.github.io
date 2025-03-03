@@ -2,6 +2,7 @@
 layout: project
 title: "Filter Material From"
 description: "Implemented a new MaterialFromFilter in OpenMC, enabling more granular tally tracking for nuclear simulations. This filter allows users to record particle interactions and currents  specifically based on the material a particle originates from."
+short_description: "Implemented a new MaterialFromFilter in OpenMC, enabling more granular tally tracking for nuclear simulations. This filter allows users to record particle interactions and currents  specifically based on the material a particle originates from."
 start_date: 2023-10-24
 end_date: 2023-11-09
 client:
