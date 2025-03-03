@@ -67,7 +67,7 @@ title: "{{ page.title }}"
     <div class="mb-3">
       <strong>Recommendation:</strong>
       <blockquote class="blockquote custom-quote">
-        <p><em>{{ page.recommendation_text | raw }}</em></p>
+        <p><em>{{ page.recommendation_text | markdownify | raw }}</em></p>
         {% if page.recommendation_author %}
           <footer class="blockquote-footer">{{ page.recommendation_author }}</footer>
         {% endif %}
