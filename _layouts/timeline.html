@@ -50,7 +50,7 @@ layout: page_no_right
             {% for project in sorted_projects %}
             <div class="project-timeline" 
                  data-skills="{{ project.skills | join: ',' }}"
-                 data-description="{{ project.short_description | strip_html | escape }}"
+                 data-short_description="{{ project.short_description | strip_html | escape }}"
                  data-url="{{ project.url | relative_url }}"
                  data-start-date="{{ project.start_date | date: '%Y/%m/%d' }}"
                  data-end-date="{% if project.end_date %}{{ project.end_date | date: '%Y/%m/%d' }}{% else %}Present{% endif %}">
