@@ -13,11 +13,12 @@ skills:
 
 recommendation_text: "Baptiste has been a great partner for the past 3 years (one of the very first at NAAREA's !) :
 
-- able to teach wisely & pedagogically to junior as well as senior developpers ,
+- able to teach wisely & pedagogically to junior as well as senior developpers,
 
-- expertly dealing with multiple issues brought to him through many intercourses, concerning both code & physics advanced skills throughout a 'support' contract he had cut with NAAREA's Nuke Department ,
+- expertly dealing with multiple issues brought to him through many intercourses, concerning both code & physics advanced skills throughout a 'support' contract he had cut with NAAREA's Nuke Department,
 
 - combining both self-reliance & reporting at a good level of details when working on a more massive project
+
 
 Baptiste's communication & interpersonal skills are a great strength for his future partners, he will give you a sincere and honest feedback of
 how it was, how it is, how it should be & how it could be, regarding your obligations & constraints.
