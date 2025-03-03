@@ -1,10 +1,10 @@
 ---
 layout: project
 title: "CellName on Vol Calculation"
-description: "Third project"
+description: "Optimized OpenMC's initialization process by conditionally skipping cross-section and library validation checks during plotting mode. This modification improves performance and reduces unnecessary computational overhead when running visualization-only simulations, while maintaining full validation for standard nuclear physics calculations."
 start_date: 2023-08-16
 end_date: 2023-08-18
-client: 
+client:
   name: "FirsLightFusion"
   short: "FLF"
 skills:
