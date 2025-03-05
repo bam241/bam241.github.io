@@ -7,4 +7,10 @@ end_date: 2022-09-31
 client: 
     name: "University of Wisconsin-Madison"
     short: "UWM"
+skills:
+  - Python
+  - Fuel Cycle
+  - Electronuclear Scenarii
+  - Cyclus
+  - Urnaium
 ---

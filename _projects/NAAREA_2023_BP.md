@@ -14,5 +14,12 @@ The second part of his work for us was developing internal tools for our teams, 
 
 Finally Baptiste is a very cheerful person with whom it is easy to get along, with great knowledge and culture on many topics ranging from particle physics to woodworking. During his time with us, the whole team was always glad to see him during his two days of on-site presence per month which we all impatiently awaited."
 recommendation_author: "Dr. N. Linden"
-
+skills:
+  - Python
+  - CI/CD
+  - Git
+  - Training
+  - Unit testing
+  - Docker
+  - bash
 ---

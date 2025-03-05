@@ -11,4 +11,5 @@ client:
 skills:
   - C++
   - DAGMC
+  - CMake
 ---

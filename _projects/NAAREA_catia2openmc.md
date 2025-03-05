@@ -6,5 +6,7 @@ short_description: "I developed a Catia-OpenMC interface for NAAREA that automat
 start_date: 2022-06-01
 end_date: 2022-09-31
 client: "NAAREA"
-
+skills:
+  - Python
+  - OpenMC
 ---
