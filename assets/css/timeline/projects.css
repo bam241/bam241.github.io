@@ -160,7 +160,7 @@
     color: var(--text-color);
 }
 
-#modalSkills {
+/* #modalSkills {
     margin-top: 15px;
     display: flex;
     flex-wrap: wrap;
@@ -173,7 +173,7 @@
     background: var(--text-muted);
     color: var(--sidebar-bg);
     font-size: 0.9em;
-}
+} */
 
 /* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
