@@ -6,7 +6,7 @@ short_description: "Implemented a new MaterialFromFilter in OpenMC, enabling mor
 start_date: 2023-10-24
 end_date: 2023-11-09
 client:
-  name: "FirsLightFusion"
+  name: "FirstLightFusion"
   short: "FLF"
 skills:
   - C++

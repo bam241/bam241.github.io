@@ -5,7 +5,7 @@ description: "Optimized OpenMC's initialization process by conditionally skippin
 start_date: 2023-08-16
 end_date: 2023-08-18
 client:
-  name: "FirsLightFusion"
+  name: "FirstLightFusion"
   short: "FLF"
 skills:
   - C++
