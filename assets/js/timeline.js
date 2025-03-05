@@ -747,6 +747,9 @@ class TimelineManager {
     
     // Update the extractProjectData method to include categories
     extractProjectData(timeline) {
+        console.log('Skills dataset:', timeline.dataset.skills);
+        console.log('Categories dataset:', timeline.dataset.categories);
+    
         return {
             title: timeline.querySelector('h3').textContent,
             client: timeline.querySelector('.project-client')?.textContent || '',
