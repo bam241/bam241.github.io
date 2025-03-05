@@ -247,32 +247,3 @@
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
     }
 }
-
-.skills-section,
-.categories-section {
-    margin-top: 15px;
-}
-
-.skills-badges,
-.categories-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.skill-badge,
-.category-badge {
-    background-color: #f0f0f0;
-    color: #333;
-    padding: 4px 8px;
-    border-radius: 16px;
-    font-size: 0.8em;
-    white-space: nowrap;
-}
-
-.categories-section h4,
-.skills-section h4 {
-    margin-bottom: 10px;
-    color: #666;
-    font-size: 1em;
-}
