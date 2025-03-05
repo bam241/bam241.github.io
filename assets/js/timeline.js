@@ -693,29 +693,69 @@ class TimelineManager {
         modal.style.display = 'block';
     }
 
-    extractProjectData(timeline) {
-        const title = timeline.querySelector('h3').textContent;
-        const short_description = timeline.dataset.short_description || '';
-        const description = short_description || timeline.dataset.description;
-        
-        return {
-            title: title,
-            client: timeline.querySelector('.project-client')?.textContent || '',
-            dates: timeline.querySelector('.project-dates')?.textContent || '',
-            description: description || 'No description available.',
-            skills: (timeline.dataset.skills || '').split(','),
-            url: timeline.dataset.url
-        };
-    }
-
     updateModalContent(modal, data) {
         modal.dataset.projectUrl = data.url;
         document.getElementById('modalTitle').textContent = data.title;
         document.getElementById('modalClient').textContent = data.client;
         document.getElementById('modalDates').textContent = data.dates;
         document.getElementById('modalDescription').textContent = data.description;
-        document.getElementById('modalSkills').innerHTML = 
-            data.skills.map(skill => `<span>${skill.trim()}</span>`).join('');
+        
+        // Skills Section
+        const modalSkillsContainer = document.getElementById('modalSkills');
+        modalSkillsContainer.innerHTML = ''; // Clear previous content
+        
+        if (data.skills && data.skills.length > 0 && data.skills[0] !== '') {
+            const skillsTitle = document.createElement('h4');
+            skillsTitle.textContent = 'Skills';
+            modalSkillsContainer.appendChild(skillsTitle);
+            
+            const skillsWrapper = document.createElement('div');
+            skillsWrapper.classList.add('skills-badges');
+            
+            data.skills.forEach(skill => {
+                const skillBadge = document.createElement('span');
+                skillBadge.classList.add('skill-badge');
+                skillBadge.textContent = skill.trim();
+                skillsWrapper.appendChild(skillBadge);
+            });
+            
+            modalSkillsContainer.appendChild(skillsWrapper);
+        }
+    
+        // Categories Section
+        const modalCategoriesContainer = document.getElementById('modalCategories');
+        modalCategoriesContainer.innerHTML = ''; // Clear previous content
+        
+        if (data.categories && data.categories.length > 0 && data.categories[0] !== '') {
+            const categoriesTitle = document.createElement('h4');
+            categoriesTitle.textContent = 'Categories';
+            modalCategoriesContainer.appendChild(categoriesTitle);
+            
+            const categoriesWrapper = document.createElement('div');
+            categoriesWrapper.classList.add('categories-badges');
+            
+            data.categories.forEach(category => {
+                const categoryBadge = document.createElement('span');
+                categoryBadge.classList.add('category-badge');
+                categoryBadge.textContent = category.trim();
+                categoriesWrapper.appendChild(categoryBadge);
+            });
+            
+            modalCategoriesContainer.appendChild(categoriesWrapper);
+        }
+    }
+    
+    // Update the extractProjectData method to include categories
+    extractProjectData(timeline) {
+        return {
+            title: timeline.querySelector('h3').textContent,
+            client: timeline.querySelector('.project-client')?.textContent || '',
+            dates: timeline.querySelector('.project-dates')?.textContent || '',
+            description: (timeline.dataset.short_description || timeline.dataset.description || 'No description available.'),
+            skills: (timeline.dataset.skills || '').split(','),
+            categories: (timeline.dataset.categories || '').split(','),
+            url: timeline.dataset.url
+        };
     }
 
     processProjects() {
