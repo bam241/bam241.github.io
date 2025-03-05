@@ -10,10 +10,12 @@ client:
     short: "UWM"
 skills:
     - Python
-    - Fuel Cycle
-    - Electronuclear Scenarii
     - Cyclus
     - Urnaium
+categories:
     - Simulation
+    - Fuel Cycle
+    - Electronuclear Scenario
     - non-proliferation
+
 ---
