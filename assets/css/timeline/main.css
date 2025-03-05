@@ -105,56 +105,34 @@
     margin-top: 10px;
 }
 
-.skill-badge,
-.category-badge {
-    background-color: #f0f0f0;
-    color: #333; /* Ensure text is visible */
+.skill-badge {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
     padding: 4px 8px;
     border-radius: 16px;
     font-size: 0.8em;
     white-space: nowrap;
-    margin-bottom: 5px; /* Add some vertical spacing */
+    margin-bottom: 5px;
+}
+
+.category-badge {
+    background-color: #28a745; /* Green background */
+    color: white; /* White text */
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    margin-bottom: 5px;
 }
 
 .skills-section h4,
 .categories-section h4 {
     margin-bottom: 10px;
-    color: #666;
+    color: #333;
     font-size: 1em;
 }
 
-.skills-section,
-.skills-section {
-    margin-top: 15px;
-}
-
-.skills-badges,
-.skills-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.skill-badge,
-.skills-badge {
-    background-color: #f0f0f0;
-    color: #333; /* Ensure text is visible */
-    padding: 4px 8px;
-    border-radius: 16px;
-    font-size: 0.8em;
-    white-space: nowrap;
-    margin-bottom: 5px; /* Add some vertical spacing */
-}
-
-.skills-section h4,
-.skills-section h4 {
-    margin-bottom: 10px;
-    color: #666;
-    font-size: 1em;
-}
-
-/* Ensure modal content is readable */
-.modal-body {
-    color: #333; /* Fallback text color */
+/* Debugging styles */
+#modalSkills {
+    border: 1px solid red; /* Temporary border to check visibility */
 }

@@ -694,6 +694,9 @@ class TimelineManager {
     }
 
     updateModalContent(modal, data) {
+        console.log('Skills data:', data.skills);
+        console.log('Categories data:', data.categories);
+    
         modal.dataset.projectUrl = data.url;
         document.getElementById('modalTitle').textContent = data.title;
         document.getElementById('modalClient').textContent = data.client;
@@ -704,7 +707,9 @@ class TimelineManager {
         const modalSkillsContainer = document.getElementById('modalSkills');
         modalSkillsContainer.innerHTML = ''; // Clear previous content
         
-        if (data.skills && data.skills.length > 0 && data.skills[0] !== '') {
+        if (data.skills && data.skills.length > 0) {
+            console.log('Processing skills:', data.skills);
+            
             const skillsTitle = document.createElement('h4');
             skillsTitle.textContent = 'Skills';
             modalSkillsContainer.appendChild(skillsTitle);
@@ -713,6 +718,7 @@ class TimelineManager {
             skillsWrapper.classList.add('skills-badges');
             
             data.skills.forEach(skill => {
+                console.log('Creating skill badge for:', skill);
                 const skillBadge = document.createElement('span');
                 skillBadge.classList.add('skill-badge');
                 skillBadge.textContent = skill.trim();
@@ -720,29 +726,12 @@ class TimelineManager {
             });
             
             modalSkillsContainer.appendChild(skillsWrapper);
+        } else {
+            console.log('No skills found');
+            modalSkillsContainer.innerHTML = '<p>No skills specified</p>';
         }
     
-        // Categories Section
-        const modalCategoriesContainer = document.getElementById('modalCategories');
-        modalCategoriesContainer.innerHTML = ''; // Clear previous content
-        
-        if (data.categories && data.categories.length > 0 && data.categories[0] !== '') {
-            const categoriesTitle = document.createElement('h4');
-            categoriesTitle.textContent = 'Categories';
-            modalCategoriesContainer.appendChild(categoriesTitle);
-            
-            const categoriesWrapper = document.createElement('div');
-            categoriesWrapper.classList.add('categories-badges');
-            
-            data.categories.forEach(category => {
-                const categoryBadge = document.createElement('span');
-                categoryBadge.classList.add('category-badge');
-                categoryBadge.textContent = category.trim();
-                categoriesWrapper.appendChild(categoryBadge);
-            });
-            
-            modalCategoriesContainer.appendChild(categoriesWrapper);
-        }
+        // Rest of the method remains the same...
     }
     
     // Update the extractProjectData method to include categories
