@@ -34,7 +34,7 @@ title: "{{ page.title }}"
       <div class="mb-2">
         <strong>Skills:</strong>
         {% for skill in page.skills %}
-          <a href="/projects/?skill={{ skill }}" class="badge bg-secondary me-1 text-decoration-none">{{ skill }}</a>
+          <a href="/projects/?skill={{ skill }}" class="badge bg-secondary me-1 text-decoration-none">{{ skill }}</a>{% unless forloop.last %}, {% endunless %}
         {% endfor %}
       </div>
       {% endif %}
