@@ -173,8 +173,8 @@ class TimelineManager {
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
             description: (timeline.dataset.short_description || timeline.dataset.description || 'No description available.'),
-            skills: (timeline.dataset.skills || '').split(','),
-            categories: (timeline.dataset.categories || '').split(','),
+            skills: timeline.dataset.skills ? timeline.dataset.skills.split(',').filter(skill => skill.trim() !== '') : [],
+            categories: timeline.dataset.categories ? timeline.dataset.categories.split(',').filter(category => category.trim() !== '') : [],
             url: timeline.dataset.url
         };
     }

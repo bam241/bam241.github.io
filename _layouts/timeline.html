@@ -49,12 +49,13 @@ layout: page_no_right
         <div class="projects-container">
             {% for project in sorted_projects %}
             <div class="project-timeline" 
-                 data-skills="{{ project.skills | join: ',' }}"
-                 data-short_description="{{ project.short_description | strip_html | escape }}"
-                 data-description="{{ project.description | strip_html | escape }}"
-                 data-url="{{ project.url | relative_url }}"
-                 data-start-date="{{ project.start_date | date: '%Y/%m/%d' }}"
-                 data-end-date="{% if project.end_date %}{{ project.end_date | date: '%Y/%m/%d' }}{% else %}Present{% endif %}">
+                data-skills="{{ project.skills | join: ',' }}"
+                data-categories="{{ project.categories | join: ',' }}"
+                data-short_description="{{ project.short_description | strip_html | escape }}"
+                data-description="{{ project.description | strip_html | escape }}"
+                data-url="{{ project.url | relative_url }}"
+                data-start-date="{{ project.start_date | date: '%Y/%m/%d' }}"
+                data-end-date="{% if project.end_date %}{{ project.end_date | date: '%Y/%m/%d' }}{% else %}Present{% endif %}">
                 <div class="project-line">
                     <div class="project-dot start-dot"></div>
                     <div class="project-dot end-dot"></div>
