@@ -102,21 +102,28 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin-top: 10px;
 }
 
 .skill-badge,
 .category-badge {
     background-color: #f0f0f0;
-    color: #333;
+    color: #333; /* Ensure text is visible */
     padding: 4px 8px;
     border-radius: 16px;
     font-size: 0.8em;
     white-space: nowrap;
+    margin-bottom: 5px; /* Add some vertical spacing */
 }
 
-.categories-section h4,
-.skills-section h4 {
+.skills-section h4,
+.categories-section h4 {
     margin-bottom: 10px;
     color: #666;
     font-size: 1em;
+}
+
+/* Ensure modal content is readable */
+.modal-body {
+    color: #333; /* Fallback text color */
 }
