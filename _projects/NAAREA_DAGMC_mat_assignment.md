@@ -10,6 +10,8 @@ skills:
   - C++
   - CAD
   - Nuclear Engineering
+  - Unit testing
+
 
 recommendation_text: "Baptiste has been a great partner for the past 3 years (one of the very first at NAAREA's !):
 

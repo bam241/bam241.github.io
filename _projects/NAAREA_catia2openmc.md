@@ -9,4 +9,6 @@ client: "NAAREA"
 skills:
   - Python
   - OpenMC
+  - Unit testing
+
 ---
