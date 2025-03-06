@@ -26,7 +26,12 @@ title: "{{ page.title }}"
 
       {% if page.client %}
       <div class="mb-2">
-        <strong>Client:</strong> {{ page.client.name }}
+        <strong>Client:</strong> 
+        {% if project.client.name %}
+            {{ project.client.name }}
+        {% else %}
+            {{ project.client }}
+        {% endif %}
       </div>
       {% endif %}
 
