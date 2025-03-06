@@ -7,8 +7,13 @@ start_date: 2022-06-01
 end_date: 2022-09-31
 client: "NAAREA"
 skills:
-  - Python
-  - OpenMC
-  - Unit testing
-
+    - Python
+    - OpenMC
+    - Bash
+    - CI/CD
+categories:
+    - Software Architecture
+    - Unit testing
+    - Development
+    - Nuclear Engineering
 ---

@@ -8,5 +8,17 @@ end_date: 2024-12-31
 client: "NAAREA"
 recommendation_text: "I recently attended a Git training session led by Baptiste and found it to be highly effective and engaging. The interactive format made it easy to grasp fundamental concepts (basic commands and branch management) and more advanced topics like conflict resolution. The hands-on exercises were valuable, allowing me to apply what I learned immediately."
 recommendation_author: "M. Le Moing"
+skills:
+    - Python
+    - Git
+    - Docker
+    - Bash
+    - CI/CD
+categories:
+    - Software Architecture
+    - Training
+    - Unit testing
+    - Development
+    - Nuclear Engineering
 
 ---
