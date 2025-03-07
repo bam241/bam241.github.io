@@ -1,21 +1,11 @@
 ---
 layout: project
 title: "DAGMC assignment"
-description: "Enhanced OpenMC's DAGMC geometry support by implementing advanced material override capabilities. This work introduces more flexible material assignment methods for CAD-based geometries, including the ability to replace and override material assignments at the cell level. Critically, the implementation now allows differentiation of materials in DAGMC geometries imported multiple times in the same simulation"
+
 start_date: 2024-07-01
 end_date: 2024-10-31
 client: "NAAREA"
-skills:
-    - Python
-    - C++
-    - OpenMC
-    - Git
-categories:
-    - Unit testing
-    - Development
-    - CAD
-    - Nuclear Engineering
-
+description: "Enhanced OpenMC's DAGMC geometry support by implementing advanced material override capabilities. This work introduces more flexible material assignment methods for CAD-based geometries, including the ability to replace and override material assignments at the cell level. Critically, the implementation now allows differentiation of materials in DAGMC geometries imported multiple times in the same simulation"
 
 recommendation_text: "Baptiste has been a great partner for the past 3 years (one of the very first at NAAREA's !):
 
@@ -33,5 +23,17 @@ Flexible he is, putting your satisfaction on top priority !
 
 See you soon Baptiste, & may you cut other deals that will satisfy you intellectually as much as you deserve it !"
 recommendation_author: "P. Black"
+
+
+skills:
+    - Python
+    - C++
+    - OpenMC
+    - Git
+categories:
+    - Unit testing
+    - Development
+    - CAD
+    - Nuclear Engineering
 
 ---
