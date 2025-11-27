@@ -176,11 +176,11 @@
 } */
 
 /* Dark mode adjustments */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
     .modal-content {
         background-color: #1a1f24;
     }
-}
+} */
 
 /* Timeline hover effects */
 .project-timeline:hover .project-line {
@@ -234,7 +234,7 @@
 }
 
 /* Dark mode hover adjustments */
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
     .project-timeline:hover .project-line,
     .project-line:hover {
         box-shadow: -1px 0 1px var(--timeline-color), 
@@ -246,4 +246,4 @@
     .project-content:hover {
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
     }
-}
+} */
