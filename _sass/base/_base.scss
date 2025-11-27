@@ -17,14 +17,16 @@ html {
     }
 
     &[data-mode='dark'] {
-      @include dark.styles;
+      // @include dark.styles;
+      @include light.styles;
     }
   }
 
   @media (prefers-color-scheme: dark) {
     &:not([data-mode]),
     &[data-mode='dark'] {
-      @include dark.styles;
+      // @include dark.styles;
+      @include light.styles;
     }
 
     &[data-mode='light'] {

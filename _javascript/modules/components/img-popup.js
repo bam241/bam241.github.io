@@ -33,7 +33,8 @@ export function imgPopup() {
   );
 
   if (Theme.visualState === Theme.DARK) {
-    selector = darkImages;
+    // selector = darkImages;
+    selector = lightImages;
   }
 
   let current = GLightbox({ selector: `${selector}` });
