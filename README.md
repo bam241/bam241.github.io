@@ -442,14 +442,7 @@ The setup and tooling documented here draws from the following sources:
 
 ### AI Assistance
 
-The `Makefile` and this documentation were drafted with the assistance of
-**Claude Sonnet 4.5** (Anthropic).
-
-AI assistance was used for:
-
-- Scaffolding the `Makefile` structure and sentinel file pattern
-- Writing the target reference table and workflow sections
-- Drafting troubleshooting scenarios based on known Chirpy pitfalls
+Parts of this project were drafted with the assistance of **Claude Sonnet 4.5** (Anthropic).
 
 All generated content has been reviewed, tested, and adapted for this
 specific repository by [@bam241](https://github.com/bam241).
