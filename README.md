@@ -1,84 +1,459 @@
-<!-- markdownlint-disable-next-line -->
-<div align="center">
+# Local Development Guide
 
-  <!-- markdownlint-disable-next-line -->
-  # Chirpy Jekyll Theme
+This guide covers everything you need to run **bam241.github.io** locally,
+using the provided `Makefile` (orchestration) and `tools/run.sh` (Jekyll
+wrapper used by CI).
 
-  A minimal, responsive, and feature-rich Jekyll theme for technical writing.
+---
 
-  [![CI](https://img.shields.io/github/actions/workflow/status/cotes2020/jekyll-theme-chirpy/ci.yml?logo=github)][ci]&nbsp;
-  [![Codacy Badge](https://img.shields.io/codacy/grade/4e556876a3c54d5e8f2d2857c4f43894?logo=codacy)][codacy]&nbsp;
-  [![GitHub license](https://img.shields.io/github/license/cotes2020/jekyll-theme-chirpy?color=goldenrod)][license]&nbsp;
-  [![Gem Version](https://img.shields.io/gem/v/jekyll-theme-chirpy?&logo=RubyGems&logoColor=ghostwhite&label=gem&color=orange)][gem]&nbsp;
-  [![Open in Dev Containers](https://img.shields.io/badge/Dev_Containers-Open-deepskyblue?logo=linuxcontainers)][open-container]
+## Table of Contents
 
-  [**Live Demo** →][demo]
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+- [Project Tool Files](#project-tool-files)
+  - [Makefile](#makefile)
+  - [tools/run.sh](#toolsrunsh)
+  - [rollup.config.js](#rollupconfigjs)
+  - [\_config\_dev.yml](#_config_devyml)
+- [Makefile Target Reference](#makefile-target-reference)
+- [Daily Development Workflow](#daily-development-workflow)
+- [Editing Assets](#editing-assets)
+  - [SCSS / CSS](#scss--css)
+  - [JavaScript](#javascript)
+- [Configuration Files](#configuration-files)
+- [Troubleshooting](#troubleshooting)
 
-  [![Devices Mockup](https://chirpy-img.netlify.app/commons/devices-mockup.png)][demo]
+---
 
-</div>
+## Prerequisites
 
-## Features
+The following tools must be installed before using the `Makefile`.  
+Run `make check` at any time to verify your environment.
 
-- Dark Theme
-- Localized UI language
-- Pinned Posts on Home Page
-- Hierarchical Categories
-- Trending Tags
-- Table of Contents
-- Last Modified Date
-- Syntax Highlighting
-- Mathematical Expressions
-- Mermaid Diagrams & Flowcharts
-- Dark Mode Images
-- Embed Media
-- Comment Systems
-- Built-in Search
-- Atom Feeds
-- PWA
-- Web Analytics
-- SEO & Performance Optimization
+| Tool | Minimum Version | Install |
+|------|----------------|---------|
+| [Homebrew](https://brew.sh) | any | See [brew.sh](https://brew.sh) |
+| [rbenv](https://github.com/rbenv/rbenv) | any | `brew install rbenv ruby-build` |
+| Ruby | 3.2+ | `rbenv install 3.2.2` |
+| Bundler | 2.0+ | `gem install bundler` |
+| Node.js | 18+ | `brew install node` |
+| npm | 9+ | bundled with Node |
 
-## Documentation
+> **Why rbenv instead of system Ruby?**  
+> macOS ships with an outdated Ruby that requires `sudo` for gem installs.
+> rbenv keeps Ruby versions isolated per project and avoids permission issues.
 
-To learn how to use, develop, and upgrade the project, please refer to the [Wiki][wiki].
+### One-time shell setup for rbenv
 
-## Contributing
+```bash
+# Add to ~/.zshrc (default shell on modern macOS)
+echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
+source ~/.zshrc
+```
 
-Contributions (_pull requests_, _issues_, and _discussions_) are what make the open-source community such an amazing place
-to learn, inspire, and create. Any contributions you make are greatly appreciated.
-For details, see the "[Contributing Guidelines][contribute-guide]".
+---
 
-## Credits
+## Quick Start
 
-### Contributors
+```bash
+# 1 — Clone the repo
+git clone https://github.com/bam241/bam241.github.io.git
+cd bam241.github.io
 
-Thanks to [all the contributors][contributors] involved in the development of the project!
+# 2 — Verify your environment
+make check
 
-[![all-contributors](https://contrib.rocks/image?repo=cotes2020/jekyll-theme-chirpy&columns=16)][contributors]
-<sub> — Made with [contrib.rocks](https://contrib.rocks)</sub>
+# 3 — Install all dependencies and build assets (one-time)
+make setup
 
-### Third-Party Assets
+# 4 — Start the development server
+make serve
+# → open http://127.0.0.1:4000
+```
 
-This project is built on the [Jekyll][jekyllrb] ecosystem and some [great libraries][lib], and is developed using [VS Code][vscode] as well as tools provided by [JetBrains][jetbrains] under a non-commercial open-source software license.
+> **Also editing JavaScript?**  
+> Open a second terminal and run `make watch-js` alongside `make serve`.
 
-The avatar and favicon for the project's website are from [ClipartMAX][clipartmax].
+---
 
-## License
+## Project Tool Files
 
-This project is published under [MIT License][license].
+### Makefile
 
-[gem]: https://rubygems.org/gems/jekyll-theme-chirpy
-[ci]: https://github.com/cotes2020/jekyll-theme-chirpy/actions/workflows/ci.yml?query=event%3Apush+branch%3Amaster
-[codacy]: https://app.codacy.com/gh/cotes2020/jekyll-theme-chirpy/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
-[license]: https://github.com/cotes2020/jekyll-theme-chirpy/blob/master/LICENSE
-[open-container]: https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/cotes2020/jekyll-theme-chirpy
-[jekyllrb]: https://jekyllrb.com/
-[clipartmax]: https://www.clipartmax.com/middle/m2i8b1m2K9Z5m2K9_ant-clipart-childrens-ant-cute/
-[demo]: https://cotes2020.github.io/chirpy-demo/
-[wiki]: https://github.com/cotes2020/jekyll-theme-chirpy/wiki
-[contribute-guide]: https://github.com/cotes2020/jekyll-theme-chirpy/blob/master/docs/CONTRIBUTING.md
-[contributors]: https://github.com/cotes2020/jekyll-theme-chirpy/graphs/contributors
-[lib]: https://github.com/cotes2020/chirpy-static-assets
-[vscode]: https://code.visualstudio.com/
-[jetbrains]: https://www.jetbrains.com/?from=jekyll-theme-chirpy
+**Location:** `Makefile` (repo root)  
+**Purpose:** Single entry point for all local development tasks.
+
+The `Makefile` orchestrates:
+
+- Checking that required tools are installed (`make check`)
+- Installing Ruby gems via Bundler and Node packages via npm
+- Building JavaScript bundles with Rollup
+- Building and serving the Jekyll site
+- Cleaning generated and cached files
+
+It uses **sentinel files** (`vendor/.bundle-installed`,
+`node_modules/.npm-installed`) so that `bundle install` and `npm install`
+are only re-run when their lockfiles (`Gemfile.lock`, `package-lock.json`)
+actually change — keeping repeated `make` invocations fast.
+
+```
+Makefile
+├── check           verify toolchain
+├── setup           full first-time setup
+├── install
+│   ├── install-ruby   → bundle install
+│   └── install-node   → npm install
+├── build
+│   ├── build-js       → rollup (npm run build)
+│   └── build-jekyll   → jekyll build
+├── serve           jekyll serve --livereload
+├── watch-js        rollup --watch
+├── clean           remove _site/, .jekyll-cache/, assets/js/dist/
+├── purge           clean + remove node_modules/, vendor/
+├── rebuild         clean → build → serve
+└── open            open http://127.0.0.1:4000 in browser
+```
+
+---
+
+### tools/run.sh
+
+**Location:** `tools/run.sh`  
+**Purpose:** Thin shell wrapper around `jekyll serve`, used by both the
+`Makefile` and the GitHub Actions workflow
+(`.github/workflows/pages-deploy.yml`).
+
+You can invoke it directly if you prefer not to use `make`:
+
+```bash
+bash tools/run.sh
+```
+
+> The `Makefile`'s `serve` target is the recommended approach locally
+> because it also sets `JEKYLL_ENV=development` and applies the
+> `_config_dev.yml` overlay automatically.
+
+---
+
+### rollup.config.js
+
+**Location:** `rollup.config.js` (repo root)  
+**Purpose:** Configures [Rollup](https://rollupjs.org) to bundle the
+source JavaScript files found in `_javascript/` into
+`assets/js/dist/`.
+
+The bundled files in `assets/js/dist/` are **not committed to the
+repo** (they are listed in `.gitignore`). You must build them locally
+before the site's JavaScript features will work.
+
+```
+_javascript/          ← source files (edit these)
+    ├── commons.js
+    ├── home.js
+    ├── page.js
+    ├── post.js
+    └── ...
+         ↓  rollup
+assets/js/dist/       ← generated bundles (do NOT edit)
+    ├── commons.min.js
+    └── ...
+```
+
+| npm script | What it does |
+|-----------|-------------|
+| `npm run build` | One-shot production bundle |
+| `npm run watch` | Watches `_javascript/` and rebuilds on save |
+
+---
+
+### _config_dev.yml
+
+**Location:** `_config_dev.yml` (repo root, you may need to create it)  
+**Purpose:** Overrides production values in `_config.yml` for local
+development.
+
+The `Makefile` automatically detects this file and merges it with
+`_config.yml` when serving locally. If the file does not exist, only
+`_config.yml` is used.
+
+Recommended contents:
+
+```yaml
+# _config_dev.yml
+# Overrides for local development — never committed to main branch
+
+url: "http://127.0.0.1:4000"
+baseurl: ""
+
+# Disable third-party services locally
+google_analytics:
+  id: ""
+
+comments:
+  active: ""
+
+paginate: 10
+```
+
+> **Tip:** Add `_config_dev.yml` to your global git ignore
+> (`~/.gitignore_global`) so it is never accidentally committed.
+
+---
+
+## Makefile Target Reference
+
+```
+make <target>
+```
+
+| Target | Description |
+|--------|-------------|
+| `help` | *(default)* Print all available targets with descriptions |
+| `check` | Verify ruby, bundler, jekyll, node, and npm are installed |
+| `setup` | **First-time setup:** check → install → build |
+| `install` | Install all Ruby gems and Node packages |
+| `install-ruby` | Run `bundle install` only |
+| `install-node` | Run `npm install` only |
+| `build` | Build JS bundles + Jekyll site |
+| `build-js` | Build JS bundles with Rollup only |
+| `build-jekyll` | Build Jekyll site only |
+| `serve` | Start Jekyll dev server with live reload on port 4000 |
+| `watch-js` | Watch `_javascript/` and rebuild bundles on change |
+| `clean` | Remove `_site/`, `.jekyll-cache/`, `assets/js/dist/` |
+| `purge` | `clean` + remove `node_modules/` and `vendor/` |
+| `rebuild` | `clean` → `build` → `serve` (fixes most broken states) |
+| `open` | Open `http://127.0.0.1:4000` in your default browser |
+
+---
+
+## Daily Development Workflow
+
+### Standard session (content / SCSS changes only)
+
+```bash
+make serve
+# → Jekyll watches _posts/, _pages/, _sass/ automatically
+# → Browser refreshes on every save via --livereload
+```
+
+### Session with JavaScript changes
+
+Open two terminals side by side:
+
+```bash
+# Terminal 1 — JS watcher
+make watch-js
+
+# Terminal 2 — Jekyll server
+make serve
+```
+
+Both processes must run simultaneously. Rollup rebuilds the JS bundle
+on save, then Jekyll's live reload picks up the new file and refreshes
+the browser.
+
+### After pulling changes from remote
+
+```bash
+git pull
+
+# Re-install deps only if lockfiles changed (make handles this automatically)
+make install
+
+# Rebuild JS in case upstream changed _javascript/
+make build-js
+
+# Then serve as normal
+make serve
+```
+
+### Nuclear reset (when things are broken)
+
+```bash
+make purge      # wipes _site/, .jekyll-cache/, node_modules/, vendor/
+make setup      # reinstalls everything from scratch
+make serve
+```
+
+---
+
+## Editing Assets
+
+### SCSS / CSS
+
+Source files live in `_sass/`. Jekyll compiles them automatically —
+no manual step required.
+
+```
+_sass/
+├── addon/          ← Chirpy overrides
+├── colors/         ← light/dark theme variables
+├── layout/         ← page structure
+└── main.scss       ← entry point
+```
+
+Just save your `.scss` file while `make serve` is running and the
+browser will refresh automatically.
+
+> Do **not** edit files inside `assets/css/` directly — they are
+> generated output.
+
+### JavaScript
+
+Source files live in `_javascript/`. Rollup compiles them.
+
+```
+_javascript/
+├── commons.js      ← shared across all pages
+├── home.js         ← homepage-specific
+├── page.js         ← static pages
+├── post.js         ← blog post pages
+└── utils/
+    └── ...
+```
+
+**One-shot rebuild:**
+```bash
+make build-js
+```
+
+**Continuous rebuild while editing:**
+```bash
+make watch-js   # in a dedicated terminal
+```
+
+> Do **not** edit files inside `assets/js/dist/` — they are generated
+> and will be overwritten on the next build.
+
+---
+
+## Configuration Files
+
+| File | Environment | Purpose |
+|------|-------------|---------|
+| `_config.yml` | Production + local | Main Jekyll configuration |
+| `_config_dev.yml` | Local only | Dev overrides (URL, disable analytics) |
+| `Gemfile` | Both | Ruby gem dependencies |
+| `Gemfile.lock` | Both | Locked gem versions (commit this) |
+| `package.json` | Both | Node dependencies + npm scripts |
+| `package-lock.json` | Both | Locked Node versions (commit this) |
+| `rollup.config.js` | Build time | JS bundler configuration |
+| `.github/workflows/pages-deploy.yml` | CI/CD only | GitHub Actions deployment pipeline |
+
+---
+
+## Troubleshooting
+
+### `make check` fails on Ruby
+
+```bash
+brew install rbenv ruby-build
+echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
+source ~/.zshrc
+rbenv install 3.2.2
+rbenv global 3.2.2
+```
+
+### `make serve` fails with "cannot load such file -- webrick"
+
+```bash
+bundle add webrick
+make serve
+```
+
+### JavaScript features broken (search, dark mode, etc.)
+
+The `assets/js/dist/` folder is missing or stale:
+
+```bash
+make build-js
+```
+
+### Site links are broken or point to github.io URLs
+
+Check that `_config_dev.yml` exists and contains:
+
+```yaml
+url: "http://127.0.0.1:4000"
+baseurl: ""
+```
+
+### Changes to `_config.yml` not showing up
+
+`jekyll serve` does not watch `_config.yml`. Restart the server:
+
+```bash
+# Ctrl+C to stop, then:
+make serve
+```
+
+### Gem version conflicts after `git pull`
+
+```bash
+bundle install   # or: make install-ruby
+```
+
+### Everything is broken
+
+```bash
+make purge
+make setup
+make serve
+```
+
+---
+
+## Quick Reference Card
+
+```
+┌─────────────────────────────────────────────────────────┐
+│           LOCAL DEVELOPMENT — QUICK REFERENCE           │
+├──────────────────────┬──────────────────────────────────┤
+│ First time setup     │ make setup                       │
+│ Start dev server     │ make serve                       │
+│ Watch JS changes     │ make watch-js  (2nd terminal)    │
+│ Rebuild JS once      │ make build-js                    │
+│ Clean generated      │ make clean                       │
+│ Full reset           │ make purge && make setup         │
+│ Verify tools         │ make check                       │
+│ Open in browser      │ make open                        │
+│ See all targets      │ make help                        │
+└──────────────────────┴──────────────────────────────────┘
+```
+
+---
+
+## About This Documentation
+
+The repository and website are maintained by
+[@bam241](https://github.com/bam241).
+
+### Sources & References
+
+The setup and tooling documented here draws from the following sources:
+
+| Source | Used for |
+|--------|---------|
+| [Chirpy Theme Documentation](https://chirpy.cotes.page) | Theme configuration, asset pipeline, deployment |
+| [Jekyll Official Docs](https://jekyllrb.com/docs/) | Jekyll CLI flags, configuration, SCSS pipeline |
+| [Rollup.js Documentation](https://rollupjs.org/guide/en/) | JS bundling configuration |
+| [rbenv Documentation](https://github.com/rbenv/rbenv) | Ruby version management on macOS |
+| [Bundler Documentation](https://bundler.io) | Ruby gem dependency management |
+
+### AI Assistance
+
+The `Makefile` and this documentation were drafted with the assistance of
+**Claude Sonnet 4.5** (Anthropic).
+
+AI assistance was used for:
+
+- Scaffolding the `Makefile` structure and sentinel file pattern
+- Writing the target reference table and workflow sections
+- Drafting troubleshooting scenarios based on known Chirpy pitfalls
+
+All generated content has been reviewed, tested, and adapted for this
+specific repository by [@bam241](https://github.com/bam241).
+
+> **Note:** Always verify AI-generated configuration and shell scripts
+> against the official documentation for your specific tool versions
+> before using them in production.
