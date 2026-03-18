@@ -3,7 +3,7 @@ layout: page
 ---
 
 <div class="post-content">
-  {{ content }}
+    {{ content }}
 </div>
 
 <div class="home-container">
@@ -22,11 +22,9 @@ layout: page
                 <i class="fas fa-envelope"></i>
             </a>
         </div>
-        <div class="resume-link">
-            <a href="/resume/" class="cta-button">
-                <i class="fas fa-file-pdf"></i> Resume
-            </a>
-        </div>
+        <a href="#" onclick="downloadPDF(); return false;" class="cta-button">
+            <i class="fas fa-file-pdf"></i> Resume
+        </a>
     </section>
 
     <!-- Services Offered Section -->
@@ -49,10 +47,32 @@ layout: page
 <!-- Add Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+<script>
+    async function downloadPDF() {
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjEVrP27dPrPXqhflAUwKPduVCOV4kw5rN9GeNJAuQ4NcTl2CVz7YLt11AOkkEDNyo/exec';
+
+        try {
+            const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
+            const data = await response.json();
+
+            const bytes = Uint8Array.from(atob(data.pdf), c => c.charCodeAt(0));
+            const blob = new Blob([bytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CV_Baptiste_Mouginot.pdf';
+            a.click();
+        } catch (error) {
+            console.error('Erreur:', error);
+        }
+    }
+</script>
+
 <style>
     .highlight {
-        background-color: #ffcc00; /* Highlight color */
-        color: #000; /* Text color */
+        background-color: #ffcc00;
+        color: #000;
         font-weight: bold;
         border-radius: 5px;
         padding: 10px 15px;
@@ -60,9 +80,11 @@ layout: page
         margin-top: 10px;
         display: inline-block;
     }
+
     .highlight:hover {
-        background-color: #ff9900; /* Hover color */
+        background-color: #ff9900;
     }
+
     .achievements-button {
         text-align: center;
         margin-top: 20px;
