@@ -11,20 +11,28 @@ layout: page
     <section class="hero-section">
         <h1>{{ site.data.author.name }}</h1>
         <p class="lead">{{ site.data.author.title }}</p>
-        <div class="social-links">
-            <a href="https://github.com/{{ site.data.author.github }}" target="_blank" class="social-link">
-                <i class="fab fa-github"></i>
+
+        <div class="about-links">
+            <a href="https://github.com/{{ site.data.author.github }}" target="_blank" class="cta-button">
+                <i class="fab fa-github"></i> GitHub
             </a>
-            <a href="https://www.linkedin.com/in/{{ site.data.author.linkedin }}" target="_blank" class="social-link">
-                <i class="fab fa-linkedin"></i>
+            <a href="https://www.linkedin.com/in/{{ site.data.author.linkedin }}" target="_blank" class="cta-button">
+                <i class="fab fa-linkedin"></i> LinkedIn
             </a>
-            <a href="mailto:{{ site.data.author.email }}" class="social-link">
-                <i class="fas fa-envelope"></i>
+            <a href="mailto:{{ site.data.author.email }}" class="cta-button">
+                <i class="fas fa-envelope"></i> Email
+            </a>
+            <a href="#" onclick="downloadPDF(); return false;" class="cta-button">
+                <i class="fas fa-file-pdf"></i> Resume
             </a>
         </div>
-        <a href="#" onclick="downloadPDF(); return false;" class="cta-button">
-            <i class="fas fa-file-pdf"></i> Resume
-        </a>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section">
+        <p>
+            {{ site.data.author.description | markdownify }}
+        </p>
     </section>
 
     <!-- Services Offered Section -->
@@ -69,6 +77,13 @@ layout: page
 </script>
 
 <style>
+    .about-links {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
     .highlight {
         background-color: #ffcc00;
         color: #000;
