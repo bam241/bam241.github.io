@@ -1,3 +1,24 @@
 ---
 layout: home
 ---
+
+<script>
+    /**
+     * Triggers a download of the PDF resume from the home page.
+     * Reuses the sessionStorage cache via window.getPDFData() so no
+     * extra network request is made if the PDF was already prefetched.
+     */
+    async function downloadPDF() {
+        try {
+            const base64 = await window.getPDFData();
+            const url = window.base64ToObjectURL(base64);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CV_Baptiste_Mouginot.pdf';
+            a.click();
+        } catch (error) {
+            console.error('Erreur:', error);
+        }
+    }
+</script>

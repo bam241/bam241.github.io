@@ -48,16 +48,15 @@ layout: page
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <script>
+    /**
+     * Triggers a download of the PDF resume from the home page.
+     * Reuses the sessionStorage cache via window.getPDFData() so no
+     * extra network request is made if the PDF was already prefetched.
+     */
     async function downloadPDF() {
-        const APPS_SCRIPT_URL = '{{ site.apps_script_url }}';
-
         try {
-            const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
-            const data = await response.json();
-
-            const bytes = Uint8Array.from(atob(data.pdf), c => c.charCodeAt(0));
-            const blob = new Blob([bytes], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
+            const base64 = await window.getPDFData();
+            const url = window.base64ToObjectURL(base64);
 
             const a = document.createElement('a');
             a.href = url;

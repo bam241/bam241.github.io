@@ -13,35 +13,32 @@ layout: page_no_right
     </div>
 </div>
 
-<!-- Add Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <script>
-    const APPS_SCRIPT_URL = '{{ site.apps_script_url }}';
-
+    /**
+     * Loads the PDF into the iframe viewer.
+     * Uses the sessionStorage cache via window.getPDFData() if available,
+     * otherwise fetches fresh from the Apps Script URL.
+     */
     async function loadPDF() {
         try {
-            const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
-            const data = await response.json();
-
-            const bytes = Uint8Array.from(atob(data.pdf), c => c.charCodeAt(0));
-            const blob = new Blob([bytes], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-
-            document.getElementById('pdf-viewer').src = url;
+            const base64 = await window.getPDFData();
+            document.getElementById('pdf-viewer').src = window.base64ToObjectURL(base64);
         } catch (error) {
             console.error('Erreur chargement PDF:', error);
         }
     }
 
+    /**
+     * Triggers a download of the PDF file.
+     * Reuses the same cached data as the viewer via window.getPDFData()
+     * to avoid a second network fetch.
+     */
     async function downloadPDF() {
         try {
-            const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
-            const data = await response.json();
-
-            const bytes = Uint8Array.from(atob(data.pdf), c => c.charCodeAt(0));
-            const blob = new Blob([bytes], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
+            const base64 = await window.getPDFData();
+            const url = window.base64ToObjectURL(base64);
 
             const a = document.createElement('a');
             a.href = url;

@@ -1,0 +1,29 @@
+{% if site.apps_script_url %}
+<script>
+    (function () {
+        const CACHE_KEY = 'resume_pdf_cache';
+        const APPS_SCRIPT_URL = '{{ site.apps_script_url }}';
+
+        // Silently prefetch and cache the PDF when the browser is idle
+        // so it is ready before the user navigates to the resume page.
+        window.addEventListener('load', function () {
+            const run = window.requestIdleCallback || (cb => setTimeout(cb, 2000));
+
+            run(function () {
+                if (sessionStorage.getItem(CACHE_KEY)) return;
+
+                fetch(APPS_SCRIPT_URL, { redirect: 'follow' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.pdf) {
+                            sessionStorage.setItem(CACHE_KEY, data.pdf);
+                        }
+                    })
+                    .catch(() => {
+                        // Prefetch failed silently - pages will fetch on demand
+                    });
+            });
+        });
+    })();
+</script>
+{% endif %}
