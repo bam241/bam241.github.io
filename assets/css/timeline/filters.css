@@ -3,10 +3,10 @@
     position: fixed;
     bottom: 0;
     left: 50%;
-    transform: translate(-50%, calc(100% - 15px)); /* Combine horizontal centering and hiding */
+    transform: translate(-50%, calc(100% - 15px));
     background: var(--sidebar-bg);
     padding: 10px 30px;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     transition: transform 0.3s ease;
     width: auto;
@@ -24,9 +24,10 @@
     height: 20px;
 }
 
-/* Show menu on hover */
-.bottom-filter-menu:hover {
-    transform: translate(-50%, 0); /* Keep horizontal centering while showing */
+/* Show menu on hover — desktop */
+.bottom-filter-menu:hover,
+.bottom-filter-menu.open {
+    transform: translate(-50%, 0);
 }
 
 /* Arrow indicator */
@@ -39,8 +40,10 @@
     background: var(--sidebar-bg);
     padding: 2px 20px;
     border-radius: 8px 8px 0 0;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     font-size: 12px;
+    /* Make the arrow tab tappable on iOS */
+    cursor: pointer;
 }
 
 /* Responsive Design */
@@ -48,19 +51,20 @@
     .bottom-filter-menu {
         left: 0;
         right: 0;
-        transform: translateY(calc(100% - 15px)); /* Only vertical transform on mobile */
+        transform: translateY(calc(100% - 15px));
         margin-left: 0;
         width: 100%;
     }
 
-    .bottom-filter-menu:hover {
-        transform: translateY(0); /* Only vertical transform on mobile */
+    .bottom-filter-menu:hover,
+    .bottom-filter-menu.open {
+        transform: translateY(0);
     }
 }
 
 /* Filter Layout */
 .filter-section {
-    width: fit-content; /* Fit content width */
+    width: fit-content;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -68,9 +72,9 @@
 }
 
 .filter-buttons {
-    display: flex; /* Changed from grid to flex */
+    display: flex;
     gap: 0;
-    width: fit-content; /* Fit content width */
+    width: fit-content;
 }
 
 .filter-group {
@@ -115,7 +119,8 @@
 }
 
 /* Button Styles */
-.filter-btn, .reset-btn {
+.filter-btn,
+.reset-btn {
     padding: 3px 10px;
     font-size: 0.8rem;
     border: 1px solid var(--text-muted);
@@ -130,7 +135,8 @@
     padding: 3px 12px;
 }
 
-.filter-btn:hover, .reset-btn:hover {
+.filter-btn:hover,
+.reset-btn:hover {
     background: var(--text-muted);
     color: var(--sidebar-bg);
 }
@@ -148,22 +154,24 @@
         right: 0;
         transform: none;
         margin-left: 0;
-        width: 100%; /* Full width on mobile */
+        width: 100%;
     }
 }
-/* In filters.css */
+
 @media (prefers-color-scheme: dark) {
     .bottom-filter-menu {
         background: var(--sidebar-bg);
     }
 
-    .filter-btn, .reset-btn {
+    .filter-btn,
+    .reset-btn {
         background: var(--sidebar-bg);
         color: var(--text-color);
         border-color: var(--border-color);
     }
 
-    .filter-btn:hover, .reset-btn:hover {
+    .filter-btn:hover,
+    .reset-btn:hover {
         background: var(--text-color);
         color: var(--sidebar-bg);
     }
