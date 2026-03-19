@@ -1606,8 +1606,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /**
      * On touch devices, the CSS :hover state is not triggered by taps.
-     * This handler adds a tap toggle on the filter menu tab (::after arrow)
+     * This handler adds a tap toggle on the filter menu tab strip (top 30px)
      * so iOS users can show and hide the filter menu by tapping it.
+     *
+     * Tapping filter buttons inside the open menu does not close it.
+     * Tapping outside the menu closes it.
      *
      * Uses `hover: none` media query to detect touch-only devices reliably,
      * avoiding user agent string sniffing.
@@ -1616,13 +1619,16 @@ document.addEventListener('DOMContentLoaded', function () {
     if (isTouch) {
         const filterMenu = document.querySelector('.bottom-filter-menu');
         if (filterMenu) {
+            /**
+             * Toggle the menu open/closed when tapping the top tab strip area.
+             * The tab strip is always the top 30px of the menu element.
+             */
             filterMenu.addEventListener('touchstart', function (e) {
-                // Only toggle if the tap is in the arrow tab area (top 20px)
                 const rect = filterMenu.getBoundingClientRect();
                 const touchY = e.touches[0].clientY;
-                const tapInTabArea = touchY < rect.top + 20;
+                const tapInTabArea = touchY < rect.top + 30;
 
-                if (tapInTabArea || !filterMenu.classList.contains('open')) {
+                if (tapInTabArea) {
                     e.preventDefault();
                     filterMenu.classList.toggle('open');
                 }
