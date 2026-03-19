@@ -3,9 +3,9 @@ layout: page_no_right
 ---
 <div class="pdf-section">
     <div class="pdf-controls">
-        <button onclick="downloadPDF()" class="download-button">
-            <i class="fas fa-download"></i> Download PDF
-        </button>
+        <a href="#" onclick="downloadPDF(); return false;" class="cta-button">
+            <i class="fas fa-download"></i> Download Resume
+        </a>
     </div>
     <div class="pdf-container">
         <iframe id="pdf-viewer" width="100%" height="800px" frameborder="0">
@@ -13,13 +13,15 @@ layout: page_no_right
     </div>
 </div>
 
-<script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjEVrP27dPrPXqhflAUwKPduVCOV4kw5rN9GeNJAuQ4NcTl2CVz7YLt11AOkkEDNyo/exec';
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    // Charge le PDF automatiquement dans l'iframe
+<script>
+    const APPS_SCRIPT_URL = '{{ site.apps_script_url }}';
+
     async function loadPDF() {
         try {
-            const response = await fetch(APPS_SCRIPT_URL);
+            const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
             const data = await response.json();
 
             const bytes = Uint8Array.from(atob(data.pdf), c => c.charCodeAt(0));
@@ -32,10 +34,9 @@ layout: page_no_right
         }
     }
 
-    // Télécharge le PDF
     async function downloadPDF() {
         try {
-            const response = await fetch(APPS_SCRIPT_URL);
+            const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
             const data = await response.json();
 
             const bytes = Uint8Array.from(atob(data.pdf), c => c.charCodeAt(0));
@@ -51,6 +52,5 @@ layout: page_no_right
         }
     }
 
-    // Charge le PDF au chargement de la page
     loadPDF();
 </script>

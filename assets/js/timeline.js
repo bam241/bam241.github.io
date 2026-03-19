@@ -111,6 +111,10 @@ class FilterManager {
         this.activeClients = new Set();
         this.activeSkills = new Set();
         this.setupFilters();
+        // checkUrlParameters moved to initialize() - called after layout is ready
+    }
+
+    initialize() {
         this.checkUrlParameters();
     }
 
@@ -118,7 +122,7 @@ class FilterManager {
         this.clientBtns = document.querySelectorAll('.client-btn');
         this.skillBtns = document.querySelectorAll('.skill-btn');
         this.resetBtn = document.getElementById('resetFilters');
-        
+
         this.setupClientButtons();
         this.setupSkillButtons();
         this.setupResetButton();
@@ -127,14 +131,12 @@ class FilterManager {
     checkUrlParameters() {
         const urlParams = new URLSearchParams(window.location.search);
         const skillParam = urlParams.get('skill');
-        
+
         if (skillParam) {
-            // Find the corresponding skill button
             const skillButton = Array.from(this.skillBtns)
                 .find(btn => btn.dataset.skill.toLowerCase() === skillParam.toLowerCase());
-            
+
             if (skillButton) {
-                // Clear any existing filters and apply the skill filter
                 this.clearSkillFilters(document.querySelector('.skill-btn[data-skill=""]'));
                 this.toggleSkillFilter(skillButton, skillButton.dataset.skill);
                 this.applyFilters();
@@ -189,7 +191,7 @@ class FilterManager {
 
     toggleClientFilter(btn, clientName) {
         document.querySelector('.client-btn[data-client=""]')?.classList.remove('active');
-        
+
         if (btn.classList.contains('active')) {
             btn.classList.remove('active');
             this.activeClients.delete(clientName);
@@ -201,7 +203,7 @@ class FilterManager {
 
     toggleSkillFilter(btn, skillName) {
         document.querySelector('.skill-btn[data-skill=""]')?.classList.remove('active');
-        
+
         if (btn.classList.contains('active')) {
             btn.classList.remove('active');
             this.activeSkills.delete(skillName);
@@ -228,13 +230,13 @@ class FilterManager {
     resetFilters() {
         this.activeClients.clear();
         this.activeSkills.clear();
-        
+
         this.clientBtns.forEach(btn => btn.classList.remove('active'));
         this.skillBtns.forEach(btn => btn.classList.remove('active'));
-        
+
         document.querySelector('.client-btn[data-client=""]')?.classList.add('active');
         document.querySelector('.skill-btn[data-skill=""]')?.classList.add('active');
-        
+
         this.manager.projectTimelines.forEach(timeline => {
             timeline.style.display = '';
         });
@@ -247,17 +249,17 @@ class FilterManager {
         this.manager.projectTimelines.forEach(timeline => {
             const clientText = timeline.querySelector('.project-client')?.textContent || '';
             const skills = timeline.dataset.skills?.split(',') || [];
-            
+
             const showDueToNoFilters = this.activeClients.size === 0 && this.activeSkills.size === 0;
-            
-            const clientMatch = showDueToNoFilters || 
-                this.activeClients.size === 0 || 
+
+            const clientMatch = showDueToNoFilters ||
+                this.activeClients.size === 0 ||
                 Array.from(this.activeClients).some(client => clientText.includes(client));
-            
-            const skillMatch = showDueToNoFilters || 
-                this.activeSkills.size === 0 || 
+
+            const skillMatch = showDueToNoFilters ||
+                this.activeSkills.size === 0 ||
                 Array.from(this.activeSkills).some(skill => skills.includes(skill));
-            
+
             timeline.style.display = (clientMatch && skillMatch) ? '' : 'none';
         });
 
@@ -268,19 +270,19 @@ class FilterManager {
         const clientCount = new Set(Array.from(this.manager.projectTimelines)
             .map(timeline => timeline.querySelector('.project-client')?.textContent)
             .filter(Boolean)).size;
-    
+
         const skillCount = new Set(Array.from(this.manager.projectTimelines)
             .map(timeline => timeline.dataset.skills?.split(',') || [])
             .flat()
             .filter(Boolean)).size;
-    
+
         const total = clientCount + skillCount;
         const clientProportion = (clientCount / total) * 100;
         const skillsProportion = (skillCount / total) * 100;
-    
+
         const clientSection = document.querySelector('.filter-group:nth-child(1)');
         const skillsSection = document.querySelector('.filter-group:nth-child(2)');
-        
+
         if (clientSection && skillsSection) {
             clientSection.style.setProperty('--section-width', `${clientProportion}%`);
             skillsSection.style.setProperty('--section-width', `${skillsProportion}%`);
@@ -298,10 +300,39 @@ class ProjectPositioner {
         this.BASE_OFFSET = 20;
         this.MONTH_HEIGHT = 40;
         this.BOX_SPACING = 5;
-        this.CONTENT_OFFSET = 10; // Space between timeline end and content
-        
-        const firstMarker = document.querySelector('.year-marker, .month-marker');
-        this.timelineOffset = firstMarker ? firstMarker.getBoundingClientRect().top : 0;
+        this.CONTENT_OFFSET = 10;
+        this.maxColumns = 1;
+        this.currentBoxWidth = this.BOX_WIDTH;
+    }
+
+    getTrueAvailableWidth() {
+        const projectsContainer = document.querySelector('.projects-container');
+        projectsContainer.style.minWidth = '';
+        const containerRect = projectsContainer.getBoundingClientRect();
+        return window.innerWidth - containerRect.left - 20;
+    }
+
+    getScaledBoxWidth() {
+        const availableWidth = this.getTrueAvailableWidth() - this.timelinesWidth;
+
+        // Use actual max lanes as column count - this is the real number needed
+        const neededColumns = this.maxColumns || 1;
+
+        const fullSizeWidth = neededColumns * (this.BOX_WIDTH + this.BOX_SPACING);
+
+        if (fullSizeWidth <= availableWidth) {
+            return this.BOX_WIDTH;
+        } else {
+            const scaledWidth = Math.floor(
+                (availableWidth - (neededColumns - 1) * this.BOX_SPACING) / neededColumns
+            );
+            return Math.max(scaledWidth, 100);
+        }
+    }
+
+    getScaledFontSize() {
+        const boxWidth = this.getScaledBoxWidth();
+        return Math.max((boxWidth / this.BOX_WIDTH) * 100, 70);
     }
 
     processProjects() {
@@ -322,11 +353,14 @@ class ProjectPositioner {
     }
 
     getProjectDates(timeline) {
-        const datesText = timeline.querySelector('.project-dates').textContent;
-        const [startStr, endStr] = datesText.split(' - ');
-        const startDate = new Date(startStr);
-        const endDate = endStr.trim() === 'Present' ? new Date() : new Date(endStr);
-        
+        const datesText = timeline.querySelector('.project-dates').textContent
+            .replace(/\s+/g, ' ')
+            .trim();
+        const parts = datesText.split(' - ');
+        const startStr = parts[0]?.trim();
+        const endStr = parts[1]?.trim();
+        const startDate = startStr ? new Date(startStr) : new Date();
+        const endDate = !endStr || endStr === 'Present' ? new Date() : new Date(endStr);
         return {
             startDate,
             endDate,
@@ -337,27 +371,23 @@ class ProjectPositioner {
 
     calculatePosition(date) {
         const zoomLevel = this.manager.zoomManager.getCurrentZoom();
-        
-        // Get the first marker to determine our starting point
         const firstMarker = document.querySelector('.year-marker, .month-marker');
         const startYear = parseInt(firstMarker.dataset.year);
-        const startMonth = parseInt(firstMarker.dataset.month) - 1; // Convert to 0-based month
-        
-        // Calculate months since start
+        const startMonth = parseInt(firstMarker.dataset.month) - 1;
+
         const yearDiff = date.getFullYear() - startYear;
         const monthDiff = date.getMonth() - startMonth;
         const totalMonths = (yearDiff * 12) + monthDiff - 1;
-        
-        // Calculate day position within month
+
         const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
         const dayProgress = (date.getDate() - 1) / daysInMonth;
-        
-        // Calculate final position
+
         const monthPosition = totalMonths * this.MONTH_HEIGHT;
         const dayOffset = dayProgress * this.MONTH_HEIGHT;
-        
+
         return Math.max(0, (monthPosition + dayOffset) * zoomLevel);
     }
+
     assignLanes(projects) {
         projects.forEach((project, i) => {
             for (let j = 0; j < i; j++) {
@@ -370,21 +400,35 @@ class ProjectPositioner {
 
     hasOverlap(project1, project2) {
         const buffer = 50;
-        return project1.startPos < (project2.endPos + buffer) && 
-               project2.startPos < (project1.endPos + buffer);
+        return project1.startPos < (project2.endPos + buffer) &&
+            project2.startPos < (project1.endPos + buffer);
+    }
+
+    checkContentOverlap(left, top, height, boxWidth) {
+        boxWidth = boxWidth || this.currentBoxWidth;
+        return this.placedBoxes.some(box => {
+            const verticalOverlap = top < box.bottom && (top + height) > box.top;
+            const horizontalOverlap = left < box.right && (left + boxWidth) > box.left;
+            return verticalOverlap && horizontalOverlap;
+        });
     }
 
     positionAllProjects(projects) {
         this.placedBoxes = [];
         const projectsContainer = document.querySelector('.projects-container');
+        projectsContainer.style.minWidth = '';
         projectsContainer.style.position = 'relative';
-        projectsContainer.style.top = `${Math.abs(this.timelineOffset)}px`;
 
-        // Calculate the maximum timeline width
         const maxLane = Math.max(...projects.map(p => p.lane));
         this.timelinesWidth = this.BASE_OFFSET + ((maxLane + 1) * this.LANE_SPACING);
 
-        // Sort projects by start position and lane
+        // First pass: calculate needed columns from actual project overlaps
+        this.maxColumns = this.calculateNeededColumns(projects);
+
+        // Then scale box to fit those columns
+        const scaledBoxWidth = this.getScaledBoxWidth();
+        this.currentBoxWidth = scaledBoxWidth;
+
         const sortedProjects = [...projects].sort((a, b) => {
             if (Math.abs(a.startPos - b.startPos) < 50) {
                 return a.lane - b.lane;
@@ -396,69 +440,103 @@ class ProjectPositioner {
         this.adjustContainerWidth(projects);
     }
 
+    calculateNeededColumns(projects) {
+        const tempBoxes = [];
+        let maxCols = 1;
+        const BOX_SPACING = this.BOX_SPACING;
+
+        const sorted = [...projects].sort((a, b) => a.startPos - b.startPos);
+
+        sorted.forEach(project => {
+            const height = 100; // estimated box height
+            const top = project.startPos + (project.endPos - project.startPos) / 2 - height / 2;
+            const bottom = top + height + BOX_SPACING; // ← add spacing to bottom
+
+            let col = 0;
+            while (tempBoxes.some(box => {
+                const vertOverlap = (top - BOX_SPACING) < box.bottom && bottom > box.top; // ← spacing on top too
+                const horizOverlap = col === box.col;
+                return vertOverlap && horizOverlap;
+            })) {
+                col++;
+            }
+
+            tempBoxes.push({ col, top, bottom });
+            maxCols = Math.max(maxCols, col + 1);
+        });
+
+        return maxCols;
+    }
 
     positionProject(project) {
         const timeline = project.element;
         const line = timeline.querySelector('.project-line');
         const content = timeline.querySelector('.project-content');
-        
+        const scaledFontSize = this.getScaledFontSize();
+        const boxWidth = this.currentBoxWidth;
+
         const horizontalPos = this.BASE_OFFSET + (project.lane * this.LANE_SPACING);
-        
-        // Position the line
+
         if (line) {
             line.style.position = 'absolute';
             line.style.left = `${horizontalPos}px`;
             line.style.top = `${project.startPos}px`;
             line.style.height = `${Math.max(project.endPos - project.startPos, 2)}px`;
         }
-        
-        // Position the content box
+
         if (content) {
+            content.style.fontSize = `${scaledFontSize}%`;
+            content.style.width = `${boxWidth}px`;
             content.style.position = 'absolute';
+
             const contentHeight = content.offsetHeight || 0;
             const verticalCenter = project.startPos + (project.endPos - project.startPos) / 2;
             const contentTop = verticalCenter - (contentHeight / 2);
-            
-            // Start positioning from the end of all timelines
+
             let contentLeft = this.timelinesWidth + this.CONTENT_OFFSET;
-            
-            // Check for overlaps and adjust position
-            while (this.checkContentOverlap(contentLeft, contentTop, contentHeight)) {
-                contentLeft += this.BOX_WIDTH + this.BOX_SPACING;
+            let placed = false;
+
+            for (let col = 0; col < this.maxColumns; col++) {
+                const tryLeft = this.timelinesWidth + this.CONTENT_OFFSET +
+                    col * (boxWidth + this.BOX_SPACING);
+
+                if (!this.checkContentOverlap(tryLeft, contentTop, contentHeight, boxWidth)) {
+                    contentLeft = tryLeft;
+                    placed = true;
+                    break;
+                }
             }
-            
+
+            // If no column fits, add a new column
+            if (!placed) {
+                this.maxColumns++;
+                contentLeft = this.timelinesWidth + this.CONTENT_OFFSET +
+                    (this.maxColumns - 1) * (boxWidth + this.BOX_SPACING);
+            }
+
             content.style.left = `${contentLeft}px`;
             content.style.top = `${contentTop}px`;
-            
+
             this.placedBoxes.push({
                 left: contentLeft,
-                right: contentLeft + this.BOX_WIDTH,
+                right: contentLeft + boxWidth,
                 top: contentTop,
                 bottom: contentTop + contentHeight
             });
         }
     }
 
-    checkContentOverlap(left, top, height) {
-        return this.placedBoxes.some(box => {
-            const verticalOverlap = top < box.bottom && (top + height) > box.top;
-            const horizontalOverlap = left < box.right && (left + this.BOX_WIDTH) > box.left;
-            return verticalOverlap && horizontalOverlap;
-        });
-    }
-
     adjustContainerWidth(projects) {
         if (projects.length === 0) return;
-        
+
+        const available = this.getTrueAvailableWidth();
         const maxRight = Math.max(
             ...this.placedBoxes.map(box => box.right),
-            this.BASE_OFFSET + 
-            (Math.max(...projects.map(p => p.lane)) + 1) * this.LANE_SPACING + 
-            this.BOX_WIDTH
+            this.timelinesWidth + this.currentBoxWidth
         );
-        
+
         const container = document.querySelector('.projects-container');
-        container.style.minWidth = `${maxRight + 40}px`;
+        container.style.minWidth = `${Math.min(maxRight + 10, available)}px`;
     }
 
     resetPositions() {
@@ -466,10 +544,12 @@ class ProjectPositioner {
         this.manager.projectTimelines.forEach(timeline => {
             const content = timeline.querySelector('.project-content');
             const line = timeline.querySelector('.project-line');
-            
+
             if (content) {
                 content.style.left = '';
                 content.style.top = '';
+                content.style.fontSize = '';
+                content.style.width = '';
             }
             if (line) {
                 line.style.left = '';
@@ -487,7 +567,7 @@ class TimelineZoom {
         this.manager = timelineManager;
         this.currentZoom = 1;
         this.ZOOM_STEP = 0.2;
-        this.MIN_ZOOM = 0.5;
+        this.MIN_ZOOM = 0.2;
         this.MAX_ZOOM = 2;
         this.initialize();
     }
@@ -503,6 +583,29 @@ class TimelineZoom {
         }
 
         this.setupZoomHandlers(zoomIn, zoomOut, resetZoom);
+    }
+
+    fitToScreen() {
+        const markers = document.querySelectorAll('.year-marker, .month-marker');
+        if (!markers.length) return;
+
+        const topbar = document.getElementById('topbar-wrapper');
+        const filterMenu = document.querySelector('.bottom-filter-menu');
+        const topbarHeight = topbar ? topbar.offsetHeight : 60;
+        const filterHeight = filterMenu ? filterMenu.offsetHeight : 60;
+        const availableHeight = window.innerHeight - topbarHeight - filterHeight - 40;
+
+        const totalHeight = markers.length * this.manager.monthHeight;
+        const fitZoom = availableHeight / totalHeight;
+        const clampedZoom = Math.min(Math.max(fitZoom, this.MIN_ZOOM), this.MAX_ZOOM);
+
+        this.applyZoom(clampedZoom);
+
+        // Reprocess after zoom with correct dimensions
+        requestAnimationFrame(() => {
+            this.manager.positioner.processProjects();
+            this.manager.filterManager.adjustFilterSections();
+        });
     }
 
     setupZoomHandlers(zoomIn, zoomOut, resetZoom) {
@@ -524,7 +627,7 @@ class TimelineZoom {
 
         resetZoom.addEventListener('click', () => {
             try {
-                this.resetZoom();
+                this.fitToScreen();
             } catch (e) {
                 console.error('Error resetting zoom:', e);
             }
@@ -537,9 +640,7 @@ class TimelineZoom {
     }
 
     resetZoom() {
-        this.currentZoom = 1;
-        this.manager.updateZoom(this.currentZoom);
-        this.manager.resetPositions();
+        this.fitToScreen();
     }
 
     getCurrentZoom() {
@@ -547,7 +648,7 @@ class TimelineZoom {
     }
 }
 
-// Source: _javascript/timeline/utils/DOMutils.js
+// Source: _javascript/timeline/utils/DOMUtils.js
 const DOMUtils = {
     setupDottedLine() {
         const currentYearMarker = document.querySelector('.current-year');
@@ -576,12 +677,12 @@ const DOMUtils = {
     }
 };
 
-// Source: _javascript/timeline/TimelineManager.js
+// Source: _javascript/timeline/TimeLineManager.js
 class TimelineManager {
     constructor() {
         this.monthHeight = 40;
         this.projectTimelines = document.querySelectorAll('.project-timeline');
-        
+
         // Get the earliest project date
         const projectDates = Array.from(this.projectTimelines)
             .map(timeline => {
@@ -591,9 +692,9 @@ class TimelineManager {
             });
 
         const earliestDate = new Date(Math.min(...projectDates));
-        
+
         this.firstYear = earliestDate.getFullYear();
-        
+
         this.yearMarkers = document.querySelectorAll('.year-marker');
         this.monthMarkers = document.querySelectorAll('.month-marker');
         this.allMarkers = document.querySelectorAll('.year-marker, .month-marker');
@@ -616,11 +717,11 @@ class TimelineManager {
         this.setupProjectHandlers();
         this.initializeModalHandlers();
         this.colorManager.applyClientColors(this.projectTimelines, this.clientColors);
-        
-        requestAnimationFrame(() => {
-            this.positioner.processProjects();
-            this.filterManager.adjustFilterSections();
-        });
+
+        // requestAnimationFrame(() => {
+        //     this.positioner.processProjects();
+        //     this.filterManager.adjustFilterSections();
+        // });
     }
 
     initializeMarkers() {
@@ -647,7 +748,7 @@ class TimelineManager {
         this.projectTimelines.forEach(timeline => {
             const content = timeline.querySelector('.project-content');
             const line = timeline.querySelector('.project-line');
-            
+
             const clickHandler = (event) => {
                 event.preventDefault();
                 this.showProjectDetails(timeline);
@@ -699,67 +800,67 @@ class TimelineManager {
         document.getElementById('modalClient').textContent = data.client;
         document.getElementById('modalDates').textContent = data.dates;
         document.getElementById('modalDescription').textContent = data.description;
-        
+
         // Skills Section
         const modalSkillsContainer = document.getElementById('modalSkills');
         modalSkillsContainer.innerHTML = ''; // Clear previous content
-        
+
         if (data.skills && data.skills.length > 0 && data.skills[0] !== '') {
             const skillsTitle = document.createElement('h4');
             skillsTitle.textContent = 'Skills';
             modalSkillsContainer.appendChild(skillsTitle);
-            
+
             const skillsWrapper = document.createElement('div');
             skillsWrapper.classList.add('skills-badges');
-            
+
             data.skills.forEach(skill => {
                 const skillBadge = document.createElement('span');
                 skillBadge.classList.add('skill-badge');
                 skillBadge.textContent = skill.trim();
                 skillsWrapper.appendChild(skillBadge);
             });
-            
+
             modalSkillsContainer.appendChild(skillsWrapper);
         }
-    
+
         // Categories Section
         const modalCategoriesContainer = document.getElementById('modalCategories');
         modalCategoriesContainer.innerHTML = ''; // Clear previous content
-        
+
         if (data.categories && data.categories.length > 0 && data.categories[0] !== '') {
             const categoriesTitle = document.createElement('h4');
             categoriesTitle.textContent = 'Categories';
             modalCategoriesContainer.appendChild(categoriesTitle);
-            
+
             const categoriesWrapper = document.createElement('div');
             categoriesWrapper.classList.add('categories-badges');
-            
+
             data.categories.forEach(category => {
                 const categoryBadge = document.createElement('span');
                 categoryBadge.classList.add('category-badge');
                 categoryBadge.textContent = category.trim();
                 categoriesWrapper.appendChild(categoryBadge);
             });
-            
+
             modalCategoriesContainer.appendChild(categoriesWrapper);
         }
     }
-    
+
     // Update the extractProjectData method to include categories
     extractProjectData(timeline) {
         console.log('Skills dataset:', timeline.dataset.skills);
         console.log('Categories dataset:', timeline.dataset.categories);
-    
+
         return {
             title: timeline.querySelector('h3').textContent,
             client: timeline.querySelector('.project-client')?.textContent || '',
             dates: timeline.querySelector('.project-dates')?.textContent || '',
             description: (timeline.dataset.short_description || timeline.dataset.description || 'No description available.'),
-            skills: timeline.dataset.skills 
-                ? timeline.dataset.skills.split(',').map(skill => skill.trim()).filter(skill => skill !== '') 
+            skills: timeline.dataset.skills
+                ? timeline.dataset.skills.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
                 : [],
-            categories: timeline.dataset.categories 
-                ? timeline.dataset.categories.split(',').map(category => category.trim()).filter(category => category !== '') 
+            categories: timeline.dataset.categories
+                ? timeline.dataset.categories.split(',').map(category => category.trim()).filter(category => category !== '')
                 : [],
             url: timeline.dataset.url
         };
@@ -794,8 +895,18 @@ class TimelineManager {
 }
 
 // Source: _javascript/timeline/main.js
-
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const timeline = new TimelineManager();
     timeline.initialize();
+
+    setTimeout(() => {
+        timeline.zoomManager.fitToScreen();
+    }, 150);
+
+    window.addEventListener('resize', () => {
+        clearTimeout(window._resizeTimer);
+        window._resizeTimer = setTimeout(() => {
+            timeline.zoomManager.fitToScreen();
+        }, 150);
+    });
 });

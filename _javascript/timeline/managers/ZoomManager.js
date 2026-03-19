@@ -3,7 +3,7 @@ class TimelineZoom {
         this.manager = timelineManager;
         this.currentZoom = 1;
         this.ZOOM_STEP = 0.2;
-        this.MIN_ZOOM = 0.5;
+        this.MIN_ZOOM = 0.2;
         this.MAX_ZOOM = 2;
         this.initialize();
     }
@@ -19,6 +19,29 @@ class TimelineZoom {
         }
 
         this.setupZoomHandlers(zoomIn, zoomOut, resetZoom);
+    }
+
+    fitToScreen() {
+        const markers = document.querySelectorAll('.year-marker, .month-marker');
+        if (!markers.length) return;
+
+        const topbar = document.getElementById('topbar-wrapper');
+        const filterMenu = document.querySelector('.bottom-filter-menu');
+        const topbarHeight = topbar ? topbar.offsetHeight : 60;
+        const filterHeight = filterMenu ? filterMenu.offsetHeight : 60;
+        const availableHeight = window.innerHeight - topbarHeight - filterHeight - 40;
+
+        const totalHeight = markers.length * this.manager.monthHeight;
+        const fitZoom = availableHeight / totalHeight;
+        const clampedZoom = Math.min(Math.max(fitZoom, this.MIN_ZOOM), this.MAX_ZOOM);
+
+        this.applyZoom(clampedZoom);
+
+        // Reprocess after zoom with correct dimensions
+        requestAnimationFrame(() => {
+            this.manager.positioner.processProjects();
+            this.manager.filterManager.adjustFilterSections();
+        });
     }
 
     setupZoomHandlers(zoomIn, zoomOut, resetZoom) {
@@ -40,7 +63,7 @@ class TimelineZoom {
 
         resetZoom.addEventListener('click', () => {
             try {
-                this.resetZoom();
+                this.fitToScreen();
             } catch (e) {
                 console.error('Error resetting zoom:', e);
             }
@@ -53,9 +76,7 @@ class TimelineZoom {
     }
 
     resetZoom() {
-        this.currentZoom = 1;
-        this.manager.updateZoom(this.currentZoom);
-        this.manager.resetPositions();
+        this.fitToScreen();
     }
 
     getCurrentZoom() {

@@ -33,6 +33,8 @@ social:
   email:
   links:
 
+# Apps Script URL for PDF generation
+apps_script_url: "https://script.google.com/macros/s/AKfycbxjEVrP27dPrPXqhflAUwKPduVCOV4kw5rN9GeNJAuQ4NcTl2CVz7YLt11AOkkEDNyo/exec"
 
 # Site Verification Settings
 webmaster_verifications:
@@ -126,7 +128,7 @@ collections:
   projects:
     output: true
     permalink: /projects/:name/
-    
+
 defaults:
   - scope:
       path: ""

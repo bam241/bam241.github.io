@@ -49,7 +49,7 @@ layout: page
 
 <script>
     async function downloadPDF() {
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjEVrP27dPrPXqhflAUwKPduVCOV4kw5rN9GeNJAuQ4NcTl2CVz7YLt11AOkkEDNyo/exec';
+        const APPS_SCRIPT_URL = '{{ site.apps_script_url }}';
 
         try {
             const response = await fetch(APPS_SCRIPT_URL, { redirect: 'follow' });
